@@ -4,6 +4,13 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.google.gson.Gson;
+import com.proyectosEnergia.controller.dao.implement.AdapterDao;
+import com.proyectosEnergia.controller.tda.list.LinkedList;
+import com.proyectosEnergia.models.Inversion;
+import com.proyectosEnergia.models.Inversionista;
+import com.proyectosEnergia.models.Proyecto;
+
 import java.io.IOException;
 import java.net.URI;
 
@@ -33,8 +40,7 @@ public class Main {
      * @param args Argumentos de línea de comandos
      * @throws IOException Excepción de entrada/salida
      */
-    public static void main(String[] args) throws IOException {
-        
+    public static void main(String[] args) throws IOException {     
         
         final HttpServer server = startServer();
         System.out.println(String.format("La aplicación Jersey se ha iniciado con WADL disponible en "
