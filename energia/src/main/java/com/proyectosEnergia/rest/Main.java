@@ -6,9 +6,9 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import com.google.gson.Gson;
 import com.proyectosEnergia.controller.dao.implement.AdapterDao;
+import com.proyectosEnergia.controller.dao.services.ProyectoServices;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
 import com.proyectosEnergia.models.Inversion;
-import com.proyectosEnergia.models.Inversionista;
 import com.proyectosEnergia.models.Proyecto;
 
 import java.io.IOException;

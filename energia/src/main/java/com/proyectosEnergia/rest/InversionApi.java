@@ -4,6 +4,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -96,6 +97,30 @@ public class InversionApi {
             e.getMessage() + "\"}"; 
         }
 
+        return Response.ok(jsonResponse).build();
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/update/{id}")
+    public Response updateInversion(@PathParam("id") Integer id, String json) {
+        String jsonResponse = "";
+        InversionServices is = new InversionServices();
+        Gson gson = new Gson();
+        
+        try {
+            Inversion inv = gson.fromJson(json, Inversion.class);
+            is.updateInversion(inv, id);
+            jsonResponse = "{\"data\":\"Inversion updated!\",\"info\":" 
+            + is.toJson() + "}";
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
+            e.getMessage() + "\"}"; 
+        }
+        
         return Response.ok(jsonResponse).build();
     }
 

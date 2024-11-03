@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle de Inversión{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Inversiones</a></li>
+<li class="breadcrumb-item text-sm text-dark active" aria-current="page">Detalle</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-0 h4 font-weight-bolder">Detalles de la Inversión</h3>
+            <p class="mb-4">Información sobre la inversión realizada:</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-sm mb-0 text-capitalize">Monto Invertido</p>
+                    <h4 class="mb-0">${{ item.montoInvertido }}</h4>
+                </div>
+                <div class="card-footer">
+                    <p class="mb-0 text-sm">Inversión realizada por: {{ item.inversionista.nombre }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <h4 class="mb-4">Detalles del Proyecto</h4>
+        </div>
+        <div class="col-xl-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-sm mb-0 text-capitalize">Nombre del Proyecto</p>
+                    <h4 class="mb-0">{{ item.proyecto.nombre }}</h4>
+                </div>
+                <div class="card-footer">
+                    <p class="mb-0 text-sm">Tipo de Energía: {{ item.proyecto.tipoEnergia }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-sm mb-0 text-capitalize">Tiempo de Construcción</p>
+                    <h4 class="mb-0">{{ item.proyecto.tiempoConstruccion }} meses</h4>
+                </div>
+                <div class="card-footer">
+                    <p class="mb-0 text-sm">Tiempo de Vida: {{ item.proyecto.tiempoVida }} años</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-sm mb-0 text-capitalize">Capacidad de Generación Diaria</p>
+                    <h4 class="mb-0">{{ item.proyecto.capacidadGeneracionDiaria }} kWh</h4>
+                </div>
+                <div class="card-footer">
+                    <p class="mb-0 text-sm">Costo de Generación Diaria: ${{ item.proyecto.costoGeneracionDiaria }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h4 class="mb-4">Detalles del Inversionista</h4>
+        </div>
+        <div class="col-xl-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-sm mb-0 text-capitalize">Nombre del Inversionista</p>
+                    <h4 class="mb-0">{{ item.inversionista.nombre }}</h4>
+                </div>
+                <div class="card-footer">
+                    <p class="mb-0 text-sm">Tipo de Inversionista: {{ item.inversionista.tipoInversionista }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

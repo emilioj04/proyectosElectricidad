@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Agregar Inversionista{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Inversionista</a></li>
+<li class="breadcrumb-item text-sm text-dark active" aria-current="page">Agregar</li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Agregar Inversionista</h2>
+    <form action="{{ url_for('router.add_inversionista') }}" method="post">
+        <div class="form-group">
+            <label for="nombre">Nombre del Inversionista</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+            <label for="tipoEnergia">Tipo de Inversionista</label>
+            <input type="text" class="form-control" id="tipoInversionista" name="tipoInversionista" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Agregar</button>
+    </form>
+</div>
+{% endblock %}

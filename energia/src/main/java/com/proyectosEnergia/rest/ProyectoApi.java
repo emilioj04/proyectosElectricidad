@@ -4,6 +4,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -98,6 +99,27 @@ public class ProyectoApi {
         }
         
         return Response.ok(jsonResponse).build();
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/update/{id}")
+    public Response updateProyecto(@PathParam("id") Integer id, String json) {
+        String responseJson = "";
+        ProyectoServices ps = new ProyectoServices();
+        Gson gson = new Gson();
+        
+        try {
+            Proyecto proyecto = gson.fromJson(json, Proyecto.class);
+            ps.updateProyecto(proyecto, id);
+            responseJson = "{\"message\":\"Proyecto updated successfully!\"}";
+            return Response.ok(responseJson).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseJson = "{\"error\":\"" + e.getMessage() + "\"}";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson).build();
+        }
     }
 }
 

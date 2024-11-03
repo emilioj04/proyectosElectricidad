@@ -4,6 +4,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -60,7 +61,7 @@ public class InversionistaApi {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/create")
+    @Path("/createInversionista")
     public Response createInversionista(String json) {
         String responseJson = "";
         InversionistaServices is = new InversionistaServices();
@@ -94,4 +95,27 @@ public class InversionistaApi {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson).build();
         }
     }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/update/{id}")
+    public Response updateInversionista(@PathParam("id") Integer id, String json) {
+        String responseJson = "";
+        InversionistaServices is = new InversionistaServices();
+        Gson gson = new Gson();
+        
+        try {
+            Inversionista inversionista = gson.fromJson(json, Inversionista.class);
+            is.updateInversionista(inversionista, id);
+            responseJson = "{\"message\":\"Inversionista updated successfully!\"}";
+            return Response.ok(responseJson).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseJson = "{\"error\":\"" + e.getMessage() + "\"}";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson).build();
+        }
+    }
+
+
 }

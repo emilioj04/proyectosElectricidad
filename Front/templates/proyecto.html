@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ item.nombre }}{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Proyecto</a></li>
+<li class="breadcrumb-item text-sm text-dark active" aria-current="page">Detalle</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-0 h4 font-weight-bolder">{{ item.nombre }}</h3>
+            <p class="mb-4">Detalles del proyecto:</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-sm mb-0 text-capitalize">Tipo de Energía</p>
+                    <h4 class="mb-0">{{ item.tipoEnergia }}</h4>
+                </div>
+                <div class="card-footer">
+                    <p class="mb-0 text-sm">Inversión: ${{ item.inversion }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-sm mb-0 text-capitalize">Tiempo de construcción</p>
+                    <h4 class="mb-0">{{ item.tiempoConstruccion }} meses</h4>
+                </div>
+                <div class="card-footer">
+                    <p class="mb-0 text-sm">Tiempo de vida: {{ item.tiempoVida }} años</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-sm mb-0 text-capitalize">Capacidad de Generación Diaria</p>
+                    <h4 class="mb-0">{{ item.capacidadGeneracionDiaria }} kWh</h4>
+                </div>
+                <div class="card-footer">
+                    <p class="mb-0 text-sm">Costo de generación diaria: ${{ item.costoGeneracionDiaria }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
