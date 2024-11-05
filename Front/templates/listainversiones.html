@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Inversiones{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Inversiones</a></li>
+<li class="breadcrumb-item text-sm text-dark active" aria-current="page">Lista</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Tabla de Inversiones</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Proyecto</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Inversionista</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Monto Invertido</th>
+                                    <th class="text-secondary opacity-7">Detalle</th>
+                                    <th class="text-secondary opacity-7">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for inversion in list %}
+                                    <tr>
+                                        <td class="align-middle text-center text-sm">
+                                            <h6 class="mb-0 text-sm">{{ inversion.proyecto.nombre }}</h6>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <p class="text-xs font-weight-bold mb-0">{{ inversion.inversionista.nombre }}</p>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{ inversion.montoInvertido }}</p>
+                                        </td>
+                                        <td class="align-middle">
+                                            <a href="{{ url_for('router.inversion', id=loop.index) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle de la inversión">
+                                                Detalle
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <form action="{{ url_for('router.delete_inversion', id=loop.index-1) }}" method="post" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="text-end mt-3">
+                <a href="/inversion/add" class="btn btn-success">Crear Inversión</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
