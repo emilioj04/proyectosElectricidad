@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Inversión</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Agregar Inversión{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Inversion</a></li>
+<li class="breadcrumb-item text-sm text-dark active" aria-current="page">Agregar</li>
+{% endblock %}
+{% block content %}
+
     <h1>Agregar Inversión</h1>
     <form method="POST">
         <h2>Datos del Proyecto</h2>
@@ -42,5 +43,4 @@
 
         <button type="submit">Agregar Inversión</button>
     </form>
-</body>
-</html>
+{% endblock %}

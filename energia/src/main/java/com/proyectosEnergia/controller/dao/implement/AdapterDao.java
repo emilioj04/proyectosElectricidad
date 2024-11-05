@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
 
 import java.util.Scanner;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 

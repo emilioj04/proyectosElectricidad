@@ -131,7 +131,6 @@ def inversion(id):
 @router.route('/inversion/add', methods=['GET', 'POST'])
 def add_inversion():
     if request.method == 'POST':
-        # Recoger datos del proyecto
         proyecto_data = {
             'nombre': request.form['nombre_proyecto'],
             'tipoEnergia': request.form['tipoEnergia'],
@@ -142,50 +141,43 @@ def add_inversion():
             'costoGeneracionDiaria': request.form['costoGeneracionDiaria']
         }
 
-        # Crear el proyecto
         r_proyecto = requests.post("http://localhost:8080/myapp/proyecto/createProyecto", json=proyecto_data)
         
-        # Verificar y procesar la respuesta del proyecto
         try:
             proyecto_info = r_proyecto.json()
-            print("Respuesta del proyecto:", proyecto_info)  # Depuración
+            print("Respuesta del proyecto:", proyecto_info)  
             if not isinstance(proyecto_info, dict):
                 raise ValueError("Respuesta del proyecto no es un objeto válido.")
         except (requests.exceptions.JSONDecodeError, ValueError) as e:
             print(f"Error al decodificar la respuesta JSON del proyecto: {e}")
             return f"Error al guardar el proyecto: {r_proyecto.status_code} - {r_proyecto.text}", 500
 
-        # Recoger datos del inversionista
         inversionista_data = {
             'nombre': request.form['nombre_inversionista'],
             'tipoInversionista': request.form['tipoInversionista']
         }
 
-        # Crear el inversionista
         r_inversionista = requests.post("http://localhost:8080/myapp/inversionista/createInversionista", json=inversionista_data)
 
-        # Verificar y procesar la respuesta del inversionista
         try:
             inversionista_info = r_inversionista.json()
-            print("Respuesta del inversionista:", inversionista_info)  # Depuración
+            print("Respuesta del inversionista:", inversionista_info) 
             if not isinstance(inversionista_info, dict):
                 raise ValueError("Respuesta del inversionista no es un objeto válido.")
         except (requests.exceptions.JSONDecodeError, ValueError) as e:
             print(f"Error al decodificar la respuesta JSON del inversionista: {e}")
             return f"Error al guardar el inversionista: {r_inversionista.status_code} - {r_inversionista.text}", 500
 
-        # Crear la inversión
         inversion_data = {
-            'proyecto': proyecto_data,  # Usar el objeto completo del proyecto
-            'inversionista': inversionista_data,  # Usar el objeto completo del inversionista
+            'proyecto': proyecto_data,  
+            'inversionista': inversionista_data,  
             'montoInvertido': request.form['montoInvertido']
         }
         
         r_inversion = requests.post("http://localhost:8080/myapp/inversion/createInversion", json=inversion_data)
 
-        # Verificar la respuesta de la creación de la inversión
         try:
-            print(r_inversion.json())  # Depuración
+            print(r_inversion.json()) 
         except requests.exceptions.JSONDecodeError:
             print(f"Error al decodificar la respuesta JSON de la inversión: {r_inversion.text}")
             return f"Error al guardar la inversión: {r_inversion.status_code} - {r_inversion.text}", 500
@@ -213,3 +205,10 @@ def update_inversion(id):
         r = requests.get(f"http://localhost:8080/myapp/inversion/get/{id}")
         inversion = r.json().get('info', {})
         return render_template('update_inversion.html', inversion=inversion, id=id)
+
+@router.route('/historial/')
+def historial():
+    r = requests.get("http://localhost:8080/myapp/historial/all")
+    print(r.json())
+    return render_template('historial.html', list=r.json()['info'])
+              
