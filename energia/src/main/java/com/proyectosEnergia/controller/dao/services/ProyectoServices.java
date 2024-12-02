@@ -3,7 +3,9 @@ package com.proyectosEnergia.controller.dao.services;
 import com.google.gson.Gson;
 import com.proyectosEnergia.controller.dao.ProyectoDao;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
+import com.proyectosEnergia.models.Inversionista;
 import com.proyectosEnergia.models.Proyecto;
+import com.proyectosEnergia.models.Enumerator.TipoEnergia;
 
 public class ProyectoServices {
     private ProyectoDao obj;
@@ -12,38 +14,49 @@ public class ProyectoServices {
         obj = new ProyectoDao();
     }
 
-    public Boolean save(Proyecto proyecto) throws Exception {
-        obj.persist(proyecto);
-        return true; 
+    public Boolean save() throws Exception {
+        return obj.save(); 
     }
 
-    public LinkedList<Proyecto> listAll() {
-        return obj.listAll();
+    public Boolean update() throws Exception {
+        return obj.update(); 
     }
 
-    public Proyecto getProyecto(Integer id) throws Exception {
-        return obj.get(id);
+    public LinkedList listAll() {
+        return obj.getListAll();
+    }
+
+    public Proyecto getProyecto() throws Exception {
+        return obj.getProyecto();
     }
 
     public void setProyecto(Proyecto proyecto) {
         obj.setProyecto(proyecto);
     }
 
-    public String toJson() {
-        LinkedList<Proyecto> proyectos = obj.listAll();
-        return new Gson().toJson(proyectos.toArray()); 
+    public TipoEnergia getTipoEnergia(String tipo){
+        return obj.getTipoEnergia(tipo);
     }
 
-    public String getProyectoJsonById(Integer id) throws Exception {
-        Proyecto proyecto = obj.get(id);
-        return new Gson().toJson(proyecto); 
+    public TipoEnergia[] getTipos(){
+        return obj.getTipos();
     }
 
-    public void updateProyecto(Proyecto proyecto, Integer index) throws Exception {
-        obj.merge(proyecto, index); 
+    public Proyecto get(Integer id) throws Exception {
+        return obj.get(id);
     }
 
-    public void deleteProyecto(Integer id) throws Exception {
-        obj.delete(id); 
+    public LinkedList orderInserSort(Integer type_order, String atributo){
+        return obj.orderInserSort(type_order, atributo);
     }
+
+    public LinkedList orderMergeSort (Integer type_order, String atributo){
+        return obj.orderMergeSort(type_order, atributo);
+    }
+
+
+    public LinkedList<Proyecto> buscar_nombre (String nombre){
+        return obj.buscar_Nombre(nombre);
+    }
+
 }

@@ -22,27 +22,24 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">id</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">tipoOperacion</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">fecha</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">objeto</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Objeto</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Operacion</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">fecha y hora</th>
                                     
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for historial in list %}
+                                {% for historial in lista %}
                                     <tr>
+                                        
                                         <td class="align-middle text-center text-sm">
-                                            <hp class="mb-0 text-sm">{{ historial.id }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ historial.nombre }}</p>
                                         </td>
                                         <td class="align-middle text-center text-sm">
-                                            <p class="text-xs font-weight-bold mb-0">{{ historial.tipoOperacion }}</p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <p class="text-xs font-weight-bold mb-0">{{ historial.fecha }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ historial.tipo }}</p>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{ historial.objeto }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ historial.hora}}</p>
                                         </td>
                                         
                                     </tr>

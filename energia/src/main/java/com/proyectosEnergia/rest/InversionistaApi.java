@@ -1,92 +1,138 @@
 package com.proyectosEnergia.rest;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.google.gson.Gson;
 import com.proyectosEnergia.controller.dao.services.InversionistaServices;
-import com.proyectosEnergia.models.Inversionista;
+import com.proyectosEnergia.controller.dao.services.RegistroServices;
+
 
 @Path("/inversionista")
 public class InversionistaApi {
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("/all")
-    public Response getAllInversionistas() {
-        String responseJson = "";
-        InversionistaServices is = new InversionistaServices();
-        Gson gson = new Gson();
-        
-        try {
-            responseJson = "{\"data\":\"success!\",\"info\":" + 
-            gson.toJson(is.listAll().toArray()) + "}";            
-        } catch (Exception e) {
-            e.printStackTrace();
-            responseJson = "{\"data\":\"ErrorMsg\",\"info\":\"" + e.getMessage() + "\"}";
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson).build();
-        }
-
-        return Response.ok(responseJson).build();
-    }
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/get/{id}")
-    public Response getInversionistaById(@PathParam("id") Integer id) {
-        String jsonResponse = "";
+    public Response getAllInversionistas() throws Exception {
+        HashMap map = new HashMap<>();
         InversionistaServices is = new InversionistaServices();
-        
-        try {
-            jsonResponse = "{\"data\":\"success!\",\"info\":" + 
-            is.getInversionistaJsonById(id) + "}";            
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
-            e.getMessage() + "\"}"; 
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
+        RegistroServices rs = new RegistroServices();
+        map.put("msg", "OK");
+        map.put("data", is.listAll().toArray());
+        if (is.listAll().isEmpty()) {
+            map.put("data", new Object[]{});
+            map.put("msg", "No hay inversionistas en la base de datos");
+
         }
 
-        return Response.ok(jsonResponse).build();
+        rs.getRegistro().setNombre("Inversionista");
+        rs.getRegistro().setTipo("Consulta");
+        rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
+        rs.save();
+
+        return Response.ok(map).build();
     }
 
+    @Path("/get/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getInversionista(@PathParam("id") Integer id) throws Exception {
+        HashMap map = new HashMap<>();
+        InversionistaServices is = new InversionistaServices();
+        RegistroServices rs = new RegistroServices();
+        
+        try {
+            is.setInversionista(is.get(id));            
+        } catch (Exception e) {
+            //Todo: handle exception
+        }
+        map.put("msg", "OK");
+        map.put("data", is.getInversionista());
+        if (is.getInversionista().getId() == null) {
+            map.put("data", "No existe el inversionista con ese id");
+            return Response.status(Status.BAD_REQUEST).entity(map).build();
+        }
+
+        rs.getRegistro().setNombre("Inversionista");
+        rs.getRegistro().setTipo("Consulta "+ is.getInversionista().getNombre() + " " + is.getInversionista().getApellido() +""+ is.getInversionista().getIdentificacion());
+        rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
+        rs.save();
+        
+        return Response.ok(map).build();
+    }
+
+    @Path("/listType")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getType() {
+        HashMap map = new HashMap<>();
+        InversionistaServices is = new InversionistaServices();
+        map.put("msg", "OK");
+        map.put("data", is.getTipos());
+        return Response.ok(map).build();
+    }
+
+    @Path("/save")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/createInversionista")
-    public Response createInversionista(String json) {
-        String responseJson = "";
-        InversionistaServices is = new InversionistaServices();
-        Gson gson = new Gson();
-        
-        try {
-            Inversionista inversionista = gson.fromJson(json, Inversionista.class);
-            is.save(inversionista);
-            responseJson = "{\"message\":\"Inversionista created successfully!\"}";
-            return Response.ok(responseJson).build();
-        } catch (Exception e) {
-            responseJson = "{\"error\":\"" + e.getMessage() + "\"}";
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson).build();
-        }
-    }
+        public Response save(HashMap map) {
+            HashMap res = new HashMap<>();
+            Gson g = new Gson();
+            String a = g.toJson(map);
+            System.out.println("**** " + a);
 
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/delete/{id}")
+            try {
+                InversionistaServices is = new InversionistaServices();
+                RegistroServices rs = new RegistroServices();
+                is.getInversionista().setNombre(map.get(("nombre")).toString());
+                is.getInversionista().setApellido(map.get(("apellido")).toString());
+                is.getInversionista().setTipoIdentificacion(is.getTipoIdentificacion(map.get(("tipoIdentificacion")).toString().toUpperCase()));
+                is.getInversionista().setIdentificacion(map.get(("identificacion")).toString());
+                is.getInversionista().setTipoInversionista(is.getTipoInversionista(map.get(("tipoInversionista")).toString().toUpperCase()));
+                is.save();
+                res.put("msg", "ok");
+                res.put("data", "Persona registrada correctamente");
+                
+                rs.getRegistro().setNombre("Inversionista");
+                rs.getRegistro().setTipo("Creacion "+ is.getInversionista().getNombre() + " " + is.getInversionista().getApellido() +""+ is.getInversionista().getIdentificacion());
+                rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm"))); 
+                rs.save();
+                    
+                return Response.ok(map).build();
+            } catch (Exception e) {
+                System.out.println("Error en sav data " + e.toString());
+                res.put("msg", "Error");
+                res.put("data", e.toString());
+                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
+            }
+            
+        }
+
+    /**
+    DELETE
+    Produces(MediaType.APPLICATION_JSON)
+    Path("/delete/{id}")
     public Response deleteInversionista(@PathParam("id") Integer id) {
         String responseJson = "";
         InversionistaServices is = new InversionistaServices();
         
         try {
-            is.deleteInversionista(id);
+            is.delete(id);
+            
             responseJson = "{\"message\":\"Inversionista deleted successfully!\"}";
             return Response.ok(responseJson).build();
         } catch (Exception e) {
@@ -94,28 +140,40 @@ public class InversionistaApi {
             responseJson = "{\"error\":\"" + e.getMessage() + "\"}";
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson).build();
         }
-    }
+    }**/
 
-    @PUT
+    @Path("/update")
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update/{id}")
-    public Response updateInversionista(@PathParam("id") Integer id, String json) {
-        String responseJson = "";
-        InversionistaServices is = new InversionistaServices();
-        Gson gson = new Gson();
-        
+    public Response update(HashMap map) {
+        HashMap res = new HashMap<>();
         try {
-            Inversionista inversionista = gson.fromJson(json, Inversionista.class);
-            is.updateInversionista(inversionista, id);
-            responseJson = "{\"message\":\"Inversionista updated successfully!\"}";
-            return Response.ok(responseJson).build();
+            InversionistaServices is = new InversionistaServices();
+            RegistroServices rs = new RegistroServices();
+            is.setInversionista(is.get(Integer.parseInt(map.get("id").toString())));
+            is.getInversionista().setApellido(map.get(("apellido")).toString());
+            is.getInversionista().setNombre(map.get(("nombre")).toString());
+            is.getInversionista().setTipoIdentificacion(is.getTipoIdentificacion(map.get(("tipoIdentificacion")).toString()));
+            is.getInversionista().setIdentificacion(map.get(("identificacion")).toString());
+            is.getInversionista().setTipoInversionista(is.getTipoInversionista(map.get(("tipoInversionista")).toString()));
+            is.update();
+            res.put("msg", "ok");
+            res.put("data", "Persona registrada correctamente");
+
+            rs.getRegistro().setNombre("Inversionista");
+            rs.getRegistro().setTipo("Actualizacion "+ is.getInversionista().getNombre() + " " + is.getInversionista().getApellido() +""+ is.getInversionista().getIdentificacion());
+            rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
+            rs.save();
+
+            return Response.ok(map).build();
+
         } catch (Exception e) {
-            e.printStackTrace();
-            responseJson = "{\"error\":\"" + e.getMessage() + "\"}";
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson).build();
+            System.out.println("Error en sav data " + e.toString());
+            res.put("msg", "Error");
+            res.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
         }
     }
-
 
 }

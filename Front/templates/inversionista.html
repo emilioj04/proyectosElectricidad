@@ -11,15 +11,23 @@
 <div class="container-fluid py-2">
     <div class="row">
         <div class="col-12">
-            <h3 class="mb-0 h4 font-weight-bolder">{{ item.nombre }}</h3>
-            <p class="mb-4">Detalles del inversionista</p>
+            <h3 class="mb-0 h4 font-weight-bolder">{{ item.nombre}} {{item.apellido}}</h3>
+            <p class="mb-4">Inversionista</p>
         </div>
-    </div>
+    </div>    
     <div class="row">
         <div class="col-xl-4 col-sm-6 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <p class="text-sm mb-0 text-capitalize">Tipo de Inversionista</p>
+                    <p class="text-sm mb-0 text-capitalize">Nro de {{item.tipoIdentificacion}}:</p>
+                    <h4 class="mb-0">{{ item.identificacion }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-sm mb-0 text-capitalize">Tipo de inversionista</p>
                     <h4 class="mb-0">{{ item.tipoInversionista }}</h4>
                 </div>
             </div>

@@ -5,45 +5,45 @@ import com.proyectosEnergia.controller.dao.implement.AdapterDao;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
 import com.proyectosEnergia.models.Inversion;
 
-public class InversionDao implements InterfazDao<Inversion> {
-    private LinkedList<Inversion> inversiones;
-    private AdapterDao<Inversion> adapterDao;
+public class InversionDao extends AdapterDao<Inversion> {
+    private Inversion inversion;
+    private LinkedList listAll;
 
     public InversionDao() {
-        this.inversiones = new LinkedList<>();
-        this.adapterDao = new AdapterDao<>(Inversion.class);
-        this.inversiones = adapterDao.listAll(); 
+        super(Inversion.class);
+    }
+
+    public Inversion getInversion() {
+        if (inversion == null) {
+            inversion = new Inversion();
+        }   
+        return inversion;
     }
 
     public void setInversion(Inversion inversion) {
-        inversiones.add(inversion);
+        this.inversion = inversion;
     }
+
+    public LinkedList getListAll() {
+        if (listAll == null) {
+            this.listAll = listAll();
+        }
+        return listAll;
+    }
+
+    public Boolean save() throws Exception {
+        Integer id = getListAll().getSize() + 1;
+        inversion.setId(id);
+        this.persist(this.inversion);
+        this.listAll = this.listAll();
+        return true;
+    }
+
+    public Boolean update() throws Exception {
+        this.merge(getInversion(), getInversion().getId() - 1);
+        this.listAll = this.listAll();
+        return true;
+    }
+
     
-    @Override
-    public LinkedList<Inversion> listAll() {
-        return inversiones;
-    }
-
-    @Override
-    public void persist(Inversion inversion) throws Exception {
-        inversiones.add(inversion);
-        adapterDao.persist(inversion); 
-    }
-
-    @Override
-    public void merge(Inversion inversion, Integer index) throws Exception {
-        inversiones.update(inversion, index);
-        adapterDao.merge(inversion, index); 
-    }
-
-    @Override
-    public Inversion get(Integer id) throws Exception {
-        return inversiones.get(id - 1); 
-    }
-
-    @Override
-    public void delete(Integer id) throws Exception {
-        inversiones.delete(id);
-        adapterDao.delete(id); 
-    }
 }

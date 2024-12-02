@@ -1,14 +1,24 @@
 package com.proyectosEnergia.models;
 
-public class Proyecto {
-    private String nombre;
-    private String tipoEnergia;
-    private int tiempoConstruccion;
-    private int tiempoVida;
-    private int inversion;
-    private double capacidadGeneracionDiaria;
-    private double costoGeneracionDiaria;
+import com.proyectosEnergia.models.Enumerator.TipoEnergia;
 
+public class Proyecto {
+    private Integer id;
+    private String nombre;
+    private TipoEnergia tipoEnergia;
+    private Integer tiempoConstruccion;
+    private Integer tiempoVida;
+    private Double inversionTotal;
+    private Double capacidadGeneracionDiaria;
+    private Double costoGeneracionDiaria;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getNombre() {
         return nombre;
@@ -18,11 +28,11 @@ public class Proyecto {
         this.nombre = nombre;
     }
 
-    public String getTipoEnergia() {
+    public TipoEnergia getTipoEnergia() {
         return tipoEnergia;
     }
 
-    public void setTipoEnergia(String tipoEnergia) {
+    public void setTipoEnergia(TipoEnergia tipoEnergia) {
         this.tipoEnergia = tipoEnergia;
     }
 
@@ -34,7 +44,7 @@ public class Proyecto {
         this.tiempoConstruccion = tiempoConstruccion;
     }
 
-    public int getTiempoVida() {
+    public Integer getTiempoVida() {
         return tiempoVida;
     }
 
@@ -42,19 +52,19 @@ public class Proyecto {
         this.tiempoVida = tiempoVida;
     }
 
-    public int getInversion() {
-        return inversion;
+    public double getInversionTotal() {
+        return inversionTotal;
     }
 
-    public void setInversion(int inversion) {
-        this.inversion = inversion;
+    public void setInversionTotal(Double inversionTotal) {
+        this.inversionTotal = inversionTotal;
     }
 
     public double getCapacidadGeneracionDiaria() {
         return capacidadGeneracionDiaria;
     }
 
-    public void setCapacidadGeneracionDiaria(double capacidadGeneracionDiaria) {
+    public void setCapacidadGeneracionDiaria(Double capacidadGeneracionDiaria) {
         this.capacidadGeneracionDiaria = capacidadGeneracionDiaria;
     }
 
@@ -62,18 +72,9 @@ public class Proyecto {
         return costoGeneracionDiaria;
     }
 
-    public void setCostoGeneracionDiaria(double costoGeneracionDiaria) {
+    public void setCostoGeneracionDiaria(Double costoGeneracionDiaria) {
         this.costoGeneracionDiaria = costoGeneracionDiaria;
     }
 
-    public Proyecto(String nombre, String tipoEnergia, int tiempoConstruccion, int tiempoVida, int inversion, double capacidadGeneracionDiaria, double costoGeneracionDiaria) {
-        this.nombre = nombre;
-        this.tipoEnergia = tipoEnergia;
-        this.tiempoConstruccion = tiempoConstruccion;
-        this.tiempoVida = tiempoVida;
-        this.inversion = inversion;
-        this.capacidadGeneracionDiaria = capacidadGeneracionDiaria;
-        this.costoGeneracionDiaria = costoGeneracionDiaria;
-    }
 }
 

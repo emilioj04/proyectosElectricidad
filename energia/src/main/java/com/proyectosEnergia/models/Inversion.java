@@ -1,40 +1,51 @@
 package com.proyectosEnergia.models;
 
+import java.util.Date;
+
 public class Inversion {
-    private Proyecto proyecto;
-    private Inversionista inversionista;
-    private double montoInvertido;
-
-
-    public Proyecto getProyecto() {
-        return proyecto;
+    private Integer id;
+    private Double montoInvertido;
+    private Integer idProyecto;
+    private Integer idInversionista;
+    private String fecha;
+    
+    public Integer getId() {
+        return id;
     }
 
-    public void setProyecto(Proyecto proyecto) {
-        this.proyecto = proyecto;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    
+    public Integer getIdProyecto() {
+        return idProyecto;
     }
 
-    public Inversionista getInversionista() {
-        return inversionista;
+    public void setIdProyecto(Integer idProyecto) {
+        this.idProyecto = idProyecto;
     }
 
-    public void setInversionista(Inversionista inversionista) {
-        this.inversionista = inversionista;
+    public Integer getIdInversionista() {
+        return idInversionista;
+    }
+
+    public void setIdInversionista(Integer idInversionista) {
+        this.idInversionista = idInversionista;
     }
 
     public double getMontoInvertido() {
         return montoInvertido;
     }
 
-    public void setMontoInvertido(double montoInvertido) {
+    public void setMontoInvertido(Double montoInvertido) {
         this.montoInvertido = montoInvertido;
     }
 
-
-    public Inversion(Proyecto proyecto, Inversionista inversionista, double montoInvertido) {
-        this.proyecto = proyecto;
-        this.inversionista = inversionista;
-        this.montoInvertido = montoInvertido;
+    public String getFecha() {
+        return fecha;
     }
 
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
 }

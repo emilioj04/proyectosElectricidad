@@ -13,41 +13,22 @@ import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.proyectosEnergia.controller.dao.services.InversionServices;
-import com.proyectosEnergia.controller.dao.services.HistorialServices;
-import com.proyectosEnergia.models.Historial;
 import com.proyectosEnergia.models.Inversion;
 
 @Path("/inversion")
 public class InversionApi {
 
-    private final HistorialServices historialServices;
-    private final InversionServices inversionServices;
-
-    public InversionApi() {
-        historialServices = new HistorialServices();
-        inversionServices = new InversionServices();
-        System.out.println("InversionApi initialized. historialServices: " + historialServices);
-    }
-
-    private void checkServices() {
-        if (historialServices == null) {
-            throw new IllegalStateException("HistorialServices is not initialized.");
-        }
-        if (inversionServices == null) {
-            throw new IllegalStateException("InversionServices is not initialized.");
-        }
-    }
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/all")
-    public Response getAllInversions() {
+    public Response getAllInversions(){
         String responseJson = "";
+        InversionServices is = new InversionServices();
         Gson gson = new Gson();
         
         try {
             responseJson = "{\"data\":\"success!\",\"info\":" + 
-            gson.toJson(inversionServices.getAll().toArray()) + "}";            
+            gson.toJson(is.getAll().toArray()) + "}";            
         } catch (Exception e) {
             e.printStackTrace();
             responseJson = "{\"data\":\"ErrorMsg\",\"info\":\"" + e.getMessage() + "\"}"; 
@@ -62,15 +43,15 @@ public class InversionApi {
     @Path("/get/{id}")
     public Response getInversionById(@PathParam("id") Integer id) {
         String jsonResponse = "";
+        InversionServices is = new InversionServices();
         
         try {
             jsonResponse = "{\"data\":\"success!\",\"info\":" + 
-            inversionServices.getInversionJsonById(id) + "}";            
+            is.getInversionJsonById(id) + "}";            
         } catch (Exception e) {
             e.printStackTrace();
             jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
             e.getMessage() + "\"}"; 
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
         }
 
         return Response.ok(jsonResponse).build();
@@ -82,22 +63,38 @@ public class InversionApi {
     @Path("/createInversion")
     public Response createInversion(String json) {
         String jsonResponse = "";
+        InversionServices is = new InversionServices();
         Gson gson = new Gson();
         try {
-            Inversion inversion = gson.fromJson(json, Inversion.class);
-            inversionServices.setInversion(inversion);
-            inversionServices.save(inversion);
-
-            int historialId = historialServices.getNextId();
-            Historial historial = new Historial(historialId, "CREATE", String.valueOf(System.currentTimeMillis()), gson.toJson(inversion));
-            historialServices.save(historial);
-
-            jsonResponse = "{\"data\":\"Inversion created!\",\"info\":" + inversionServices.toJson() + "}";
+            Inversion inv = gson.fromJson(json, Inversion.class);
+            is.setInversion(inv);
+            is.save(inv);
+            jsonResponse = "{\"data\":\"Inversion created!\",\"info\":" 
+            + is.toJson() + "}";
             
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            jsonResponse = "{\"data\":\"ErrorMsg\",\"info \":\"" + e.getMessage() + "\"}";
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
+            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
+            e.getMessage() + "\"}"; 
+        }
+        
+        return Response.ok(jsonResponse).build();
+    }
+
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/delete/{id}")
+    public Response deleteInversion(@PathParam("id") Integer id) {
+        String jsonResponse = "";
+        InversionServices is = new InversionServices();
+        
+        try {
+            is.deleteInversion(id);
+            jsonResponse = "{\"data\":\"Inversion deleted!\"}";
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
+            e.getMessage() + "\"}"; 
         }
 
         return Response.ok(jsonResponse).build();
@@ -109,40 +106,22 @@ public class InversionApi {
     @Path("/update/{id}")
     public Response updateInversion(@PathParam("id") Integer id, String json) {
         String jsonResponse = "";
+        InversionServices is = new InversionServices();
         Gson gson = new Gson();
+        
         try {
-            Inversion inversion = gson.fromJson(json, Inversion.class);
-            inversionServices.updateInversion(inversion, id);
-
-            Historial historial = new Historial(historialServices.getNextId(), "UPDATE", String.valueOf(System.currentTimeMillis()), gson.toJson(inversion));
-            historialServices.save(historial);
-
-            jsonResponse = "{\"data\":\"Inversion updated!\",\"info\":" + inversionServices.toJson() + "}";
+            Inversion inv = gson.fromJson(json, Inversion.class);
+            is.updateInversion(inv, id);
+            jsonResponse = "{\"data\":\"Inversion updated!\",\"info\":" 
+            + is.toJson() + "}";
+            
         } catch (Exception e) {
-            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + e.getMessage() + "\"}";
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
+            System.out.println(e.getMessage());
+            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
+            e.getMessage() + "\"}"; 
         }
-
+        
         return Response.ok(jsonResponse).build();
     }
 
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/delete/{id}")
-    public Response deleteInversion(@PathParam("id") Integer id) {
-        String jsonResponse = "";
-        try {
-            inversionServices.deleteInversion(id);
-
-            Historial historial = new Historial(historialServices.getNextId(), "DELETE", String.valueOf(System.currentTimeMillis()), "Inversion ID: " + id);
-            historialServices.save(historial);
-
-            jsonResponse = "{\"data\":\"Inversion deleted!\"}";
-        } catch (Exception e) {
-            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + e.getMessage() + "\"}";
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonResponse).build();
-        }
-
-        return Response.ok(jsonResponse).build();
-    }
 }

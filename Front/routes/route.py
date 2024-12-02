@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, request, render_template, redirect, url_for
+from flask import Blueprint, flash, json, request, render_template, redirect, url_for
 import requests
 
 router = Blueprint('router', __name__)
@@ -9,34 +9,39 @@ def home():
 
 
 @router.route('/proyectos')
-def lista_proyectos():
+def lista_proyectos(msg=''):
     r = requests.get("http://localhost:8080/myapp/proyecto/all")
-    print(type(r.json()))
     print(r.json())
-    return render_template('listaproyectos.html', list=r.json()['info'])
+    data = r.json()
+    return render_template('listaproyectos.html', lista=data["data"], message = msg)
+
 
 @router.route('/proyecto/<int:id>')
 def proyecto(id):
     r = requests.get(f"http://localhost:8080/myapp/proyecto/get/{id}")
     print(r.json())
-    return render_template('proyecto.html', item=r.json()['info'])
+    data = r.json()
+    return render_template('proyecto.html', item=data["data"])
 
-@router.route('/proyecto/add', methods=['GET', 'POST'])
+@router.route('/proyecto/add', methods=['GET'])
 def add_proyecto():
-    if request.method == 'POST':
-        data = {
-            'nombre': request.form['nombre'],
-            'tipoEnergia': request.form['tipoEnergia'],
-            'tiempoConstruccion': request.form['tiempoConstruccion'],
-            'tiempoVida': request.form['tiempoVida'],
-            'inversion': request.form['inversion'],
-            'capacidadGeneracionDiaria': request.form['capacidadGeneracionDiaria'],
-            'costoGeneracionDiaria': request.form['costoGeneracionDiaria']
-        }
-        r = requests.post("http://localhost:8080/myapp/proyecto/createProyecto", json=data)
-        print(r.json())
-        return redirect('/proyectos')
     return render_template('add_proyecto.html')
+
+@router.route('/proyecto/add', methods=['POST'])
+def save_proyecto():
+    headers = {'Content-Type': 'application/json'}
+    form = request.form
+    dataForm = {"nombre": form["nombre"], "tipoEnergia":form["tipoEnergia"], "tiempoConstruccion":form["tiempoConstruccion"],"tiempoVida": form["tiempoVida"], "inversionTotal": form["inversionTotal"], "capacidadGeneracionDiaria": form["capacidadGeneracionDiaria"], "costoGeneracionDiaria": form["costoGeneracionDiaria"]}
+    r = requests.post("http://localhost:8080/myapp/proyecto/save", data=json.dumps(dataForm), headers=headers)
+    data = r.json()
+    if r.status_code == 200:
+        flash('Se guardo correctamente el Proyecto', category = 'info')
+        return redirect (url_for('router.lista_proyectos'))
+    else:
+        flash(str(data["data"]), category = 'error')
+        return redirect (url_for('router.add_proyecto'))
+
+
 
 @router.route('/proyecto/update/<int:id>', methods=['GET', 'POST'])
 def update_proyecto(id):
@@ -66,34 +71,40 @@ def delete_proyecto(id):
     return redirect(url_for('router.lista_proyectos'))
 
 @router.route('/inversionistas/')
-def lista_inversionistas():
+def lista_inversionistas(msg=''):
     r = requests.get("http://localhost:8080/myapp/inversionista/all")
     print(r.json())
-    return render_template('listainversionistas.html', list=r.json()['info'])
+    data = r.json()
+    return render_template('listainversionistas.html', lista=data["data"], message = msg)
 
 @router.route('/inversionista/<int:id>')
 def inversionista(id):
     r = requests.get(f"http://localhost:8080/myapp/inversionista/get/{id}")
     print(r.json())
-    return render_template('inversionista.html', item=r.json()['info'])
+    data = r.json()
+    return render_template('inversionista.html', item=data["data"])
 
-@router.route('/inversionista/add', methods=['GET', 'POST'])
+@router.route('/inversionista/add', methods=['GET'])
 def add_inversionista():
-    if request.method == 'POST':
-        data = {
-            'nombre': request.form['nombre'],
-            'tipoInversionista': request.form['tipoInversionista'],
-        }
-        r = requests.post("http://localhost:8080/myapp/inversionista/createInversionista", json=data)
-        try:
-            response_json = r.json()
-            print(response_json)
-        except requests.exceptions.JSONDecodeError:
-            print(f"Error al decodificar la respuesta JSON: {r.text}")
-            return f"Error al guardar el inversionista: {r.status_code} - {r.text}", 500
-
-        return redirect('/inversionistas')
+    
     return render_template('add_inversionista.html')
+
+
+@router.route('/inversionista/add', methods=['POST'])
+def save_inversionista():
+    headers = {'Content-Type': 'application/json'}
+    form = request.form
+    dataForm = {"nombre": form["nombre"], "apellido": form ["apellido"], "tipoIdentificacion":form["tipoIdentificacion"],"identificacion":form["identificacion"],"tipoInversionista": form["tipoInversionista"]}
+    r = requests.post("http://localhost:8080/myapp/inversionista/save", data=json.dumps(dataForm), headers=headers)
+    data = r.json()
+    if r.status_code == 200:
+        flash('Se guardo correctamente el inversionista', category = 'info')
+        return redirect (url_for('router.lista_inversionistas'))
+    else:
+        flash(str(data["data"]), category = 'error')
+        return redirect (url_for('router.add_inversionista'))
+    
+    
 
 @router.route('/inversionista/delete/<int:id>', methods=['GET', 'POST'])
 def delete_inversionista(id):
@@ -117,10 +128,42 @@ def update_inversionista(id):
         return render_template('update_inversionista.html', inversionista=inversionista, id=id)
 
 @router.route('/inversiones/')
-def lista_inversiones():
-    r = requests.get("http://localhost:8080/myapp/inversion/all")
-    print(r.json())
-    return render_template('listainversiones.html', list=r.json()['info'])
+def lista_inversiones(msg = ''):
+    inversiones_res = requests.get("http://localhost:8080/myapp/inversion/all")
+    inversionistas_res = requests.get("http://localhost:8080/myapp/inversionista/all")
+    proyectos_res = requests.get("http://localhost:8080/myapp/proyecto/all")
+
+    if (inversiones_res.status_code == 200 and 
+        inversionistas_res.status_code == 200 and 
+        proyectos_res.status_code == 200):
+
+        inversiones = inversiones_res.json()
+        inversionistas = inversionistas_res.json()
+        proyectos = proyectos_res.json()
+
+        #buscar el nombre de inversionista y proyecto mediante idInversionista e idProyecto
+        for inversion in inversiones['data']:
+            for inversionista in inversionistas['data']:
+                if inversion['idInversionista'] == inversionista['id']:
+                    inversion['nombreInversionista'] = inversionista['nombre']
+                    inversion['apellidoInversionista'] = inversionista['apellido']
+                    inversion['tipoInversionista'] = inversionista['tipoInversionista']
+            for proyecto in proyectos['data']:
+                if inversion['idProyecto'] == proyecto['id']:
+                    inversion['nombreProyecto'] = proyecto['nombre']
+                    inversion['tipoEnergia'] = proyecto['tipoEnergia']
+                    inversion['tiempoConstruccion'] = proyecto['tiempoConstruccion']
+                    inversion['tiempoVida'] = proyecto['tiempoVida']
+                    inversion['inversionTotal'] = proyecto['inversionTotal']
+                    inversion['capacidadGeneracionDiaria'] = proyecto['capacidadGeneracionDiaria']
+                    inversion['costoGeneracionDiaria'] = proyecto['costoGeneracionDiaria']
+            
+
+        return render_template('listainversiones.html', lista = inversiones['data'], message = msg)
+    else:
+        # Manejar errores de conexión o datos faltantes
+        return "Error al obtener datos de inversiones, inversionistas o proyectos.", 500
+
 
 @router.route('/inversion/<int:id>')
 def inversion(id):
@@ -207,8 +250,9 @@ def update_inversion(id):
         return render_template('update_inversion.html', inversion=inversion, id=id)
 
 @router.route('/historial/')
-def historial():
-    r = requests.get("http://localhost:8080/myapp/historial/all")
+def historial(msg=''):
+    r = requests.get("http://localhost:8080/myapp/registro/all")
     print(r.json())
-    return render_template('historial.html', list=r.json()['info'])
+    data = r.json()
+    return render_template('historial.html', lista=data["data"], message = msg)
               

@@ -1,49 +1,204 @@
 package com.proyectosEnergia.controller.dao;
 
-import com.proyectosEnergia.controller.dao.implement.InterfazDao;
 import com.proyectosEnergia.controller.dao.implement.AdapterDao;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
 import com.proyectosEnergia.models.Inversionista;
+import com.proyectosEnergia.models.Enumerator.TipoIdentificacion;
+import com.proyectosEnergia.models.Enumerator.TipoInversionista;
 
-public class InversionistaDao implements InterfazDao<Inversionista> {
-    private LinkedList<Inversionista> inversionistas;
-    private AdapterDao<Inversionista> adapterDao;
+public class InversionistaDao extends AdapterDao<Inversionista> {
+    private Inversionista inversionista;
+    private LinkedList listAll;
 
     public InversionistaDao() {
-        this.inversionistas = new LinkedList<>();
-        this.adapterDao = new AdapterDao<>(Inversionista.class);
-        this.inversionistas = adapterDao.listAll(); 
+        super(Inversionista.class);
+        this.listAll = this.listAll();
+    }
+
+    public Inversionista getInversionista() {
+        if (inversionista == null) {
+            inversionista = new Inversionista();
+        }
+        return inversionista;
     }
 
     public void setInversionista(Inversionista inversionista) {
-        inversionistas.add(inversionista);
+        this.inversionista = inversionista;
     }
 
-    @Override
-    public LinkedList<Inversionista> listAll() {
-        return inversionistas;
+    public LinkedList getListAll() {
+        return listAll;
     }
 
-    @Override
-    public void persist(Inversionista inversionista) throws Exception {
-        inversionistas.add(inversionista);
-        adapterDao.persist(inversionista);
+    public Boolean save() throws Exception {
+        LinkedList<Inversionista> lista = getListAll();
+        String identificacion = inversionista.getIdentificacion();
+        if (identificacion.length() < 10 || identificacion.length() > 13) {
+            throw new Exception("El número de identificación debe tener entre 10 y 13 dígitos. Actual: " + identificacion.length());
+        }
+
+        if (lista == null) {
+            lista = new LinkedList<>();
+        }
+
+        for (Inversionista inv : lista.toArray()) {
+            if (inv.getIdentificacion().equalsIgnoreCase(inversionista.getIdentificacion())) {
+                throw new Exception("Ya existe un inversionista con el número de identificación: " + inversionista.getIdentificacion());
+            }
+        }
+        
+        Integer id = getListAll().getSize() + 1;
+        inversionista.setId(id);
+        this.persist(this.inversionista);
+        this.listAll = this.listAll();
+        return true;
     }
 
-    @Override
-    public void merge(Inversionista inversionista, Integer index) throws Exception {
-        inversionistas.update(inversionista, index);
-        adapterDao.merge(inversionista, index); 
+    public Boolean update() throws Exception {
+        this.merge(getInversionista(), getInversionista().getId() - 1);
+        this.listAll = this.listAll();
+        return true;
     }
 
-    @Override
-    public Inversionista get(Integer id) throws Exception {
-        return inversionistas.get(id - 1); 
+    public Boolean delete() throws Exception {
+        this.delete(getInversionista().getId() - 1);
+        this.listAll = this.listAll();
+        return true;
     }
 
-    @Override
-    public void delete(Integer id) throws Exception {
-        inversionistas.delete(id);
-        adapterDao.delete(id); 
+    public TipoIdentificacion getTipoIdentificacion(String tipo){
+        return TipoIdentificacion.valueOf(tipo);
+    }
+
+    public TipoIdentificacion[] getTipos(){
+        return TipoIdentificacion.values();
+    }
+
+    public TipoInversionista getTipoInversionista(String tipo){
+        return TipoInversionista.valueOf(tipo);
+    }
+
+    public TipoInversionista[] getTiposInversionista(){
+        return TipoInversionista.values();
+    }
+
+    public LinkedList orderInserSort(Integer type_order, String atributo){
+        LinkedList listita = listAll();
+        if (!listAll().isEmpty()){
+            Inversionista[] lista = (Inversionista[]) listita.toArray();
+            listita.reset();
+            for (int i = 1; i < lista.length; i++){
+                Inversionista aux = lista[i];   
+                int j = i - 1;
+                while (j >= 0 && (verify(lista[j], aux, type_order, atributo))){
+                    lista[j + 1] = lista[j--];
+                }
+                lista[j + 1] = aux;
+            } 
+            listita.toList(lista);
+        }
+        return listita;
+    }
+
+    private Boolean verify(Inversionista a, Inversionista b, Integer type_order, String atributo){
+        if (type_order == 1) {
+            if (atributo.equalsIgnoreCase("apellidos")) {
+                return a.getApellido().compareTo(b.getApellido()) > 0;
+            } else if (atributo.equalsIgnoreCase("nombres")) {
+                return a.getNombre().compareTo(b.getNombre()) > 0;
+            } else if (atributo.equalsIgnoreCase("id")) {
+                return a.getId() > b.getId();
+            }
+        } else {
+            if (atributo.equalsIgnoreCase("apellidos")) {
+                return a.getApellido().compareTo(b.getApellido()) < 0;
+            } else if (atributo.equalsIgnoreCase("nombres")) {
+                return a.getNombre().compareTo(b.getNombre()) < 0;
+            } else if (atributo.equalsIgnoreCase("id")) {
+                return a.getId() < b.getId();
+            }
+        }
+        return false;
+    }
+
+    public LinkedList<Inversionista> buscar_apellidos (String texto) {
+        LinkedList<Inversionista> lista = new LinkedList<>();
+        LinkedList<Inversionista> listita = listAll();
+        if (!listita.isEmpty()) {
+            Inversionista[] aux = listita.toArray();
+            for (int i = 0; i < aux.length; i++) {
+
+                if (aux[i].getApellido().toLowerCase().startsWith(texto.toLowerCase())) {
+                    //System.out.println("**** "+aux[i].get);
+                    lista.add(aux[i]);
+                }
+            }
+        }
+        return lista;
+    }
+
+
+
+    public Inversionista buscar_identificacion(String texto) {
+        Inversionista persona = null;
+        LinkedList<Inversionista> listita = listAll();
+        if (!listita.isEmpty()) {
+            Inversionista[] aux = listita.toArray();
+            for (int i = 0; i < aux.length; i++) {
+                if (aux[i].getIdentificacion().equals(texto)) {
+                    //System.out.println("**** "+aux[i].get);
+                    persona = aux[i];
+                    break;
+                }
+            }
+        }
+        return persona;
+    }
+
+    public LinkedList orderMergeSort(Integer type_order, String atributo){
+        LinkedList listita = listAll();
+        if (!listAll().isEmpty()){
+            Inversionista[] lista = (Inversionista[]) listita.toArray();
+            listita.reset();
+            mergeSort(lista, type_order, atributo);
+            listita.toList(lista);
+        }
+        return listita;
+    }
+
+    private void mergeSort(Inversionista[] lista, Integer type_order, String atributo){
+        if (lista.length > 1){
+            int med = lista.length / 2;
+            Inversionista[] izquierda = new Inversionista[med];
+            Inversionista[] derecha = new Inversionista[lista.length - med];
+            for (int i = 0; i < med; i++){
+                izquierda[i] = lista[i];
+            }
+            for (int i = med; i < lista.length; i++){
+                derecha[i - med] = lista[i];
+            }
+            mergeSort(izquierda, type_order, atributo);
+            mergeSort(derecha, type_order, atributo);
+            merge(lista, izquierda, derecha, type_order, atributo);
+        }
+    }
+
+    private void merge(Inversionista[] lista, Inversionista[] izquierda, Inversionista[] derecha, Integer type_order, String atributo){
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        while (i < izquierda.length && j < derecha.length){
+            if (verify(izquierda[i], derecha[j], type_order, atributo)){
+                lista[k++] = izquierda[i++];
+            } else {
+                lista[k++] = derecha[j++];
+            }
+        }
+        while (i < izquierda.length){
+            lista[k++] = izquierda[i++];
+        }
+        while (j < derecha.length){
+            lista[k++] = derecha[j++];
+        }
     }
 }

@@ -1,9 +1,10 @@
 package com.proyectosEnergia.controller.dao.services;
 
-import com.google.gson.Gson;
 import com.proyectosEnergia.controller.dao.InversionistaDao;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
 import com.proyectosEnergia.models.Inversionista;
+import com.proyectosEnergia.models.Enumerator.TipoIdentificacion;
+import com.proyectosEnergia.models.Enumerator.TipoInversionista;
 
 public class InversionistaServices {
     private InversionistaDao obj;
@@ -12,38 +13,62 @@ public class InversionistaServices {
         obj = new InversionistaDao();
     }
 
-    public Boolean save(Inversionista inversionista) throws Exception {
-        obj.persist(inversionista);
-        return true; 
+    public Boolean save() throws Exception {
+        return obj.save(); 
     }
 
-    public LinkedList<Inversionista> listAll() {
-        return obj.listAll();
+    public Boolean update() throws Exception {
+        return obj.update(); 
     }
 
-    public Inversionista getInversionista(Integer id) throws Exception {
-        return obj.get(id);
+
+    public LinkedList listAll() {
+        return obj.getListAll();
+    }
+
+    public Inversionista getInversionista() {
+        return obj.getInversionista();
     }
 
     public void setInversionista(Inversionista inversionista) {
         obj.setInversionista(inversionista);
     }
 
-    public String toJson() {
-        LinkedList<Inversionista> inversionistas = obj.listAll();
-        return new Gson().toJson(inversionistas.toArray()); 
+    public TipoIdentificacion getTipoIdentificacion(String tipo){
+        return obj.getTipoIdentificacion(tipo);
     }
 
-    public String getInversionistaJsonById(Integer id) throws Exception {
-        Inversionista inversionista = obj.get(id);
-        return new Gson().toJson(inversionista); 
+    public TipoIdentificacion[] getTipos(){
+        return obj.getTipos();
     }
 
-    public void updateInversionista(Inversionista inversionista, Integer index) throws Exception {
-        obj.merge(inversionista, index); 
+    public TipoInversionista getTipoInversionista(String tipo) {
+        return obj.getTipoInversionista(tipo);
     }
 
-    public void deleteInversionista(Integer id) throws Exception {
-        obj.delete(id); 
+    public TipoInversionista[] getTiposInversionista(){
+        return obj.getTiposInversionista();
     }
+
+    public Inversionista get(Integer id) throws Exception {
+        return obj.get(id);
+    }
+
+    public LinkedList orderInserSort(Integer type_order, String atributo){
+        return obj.orderInserSort(type_order, atributo);
+    }
+
+    public LinkedList orderMergeSort (Integer type_order, String atributo){
+        return obj.orderMergeSort(type_order, atributo);
+    }
+
+    public LinkedList<Inversionista> buscar_apellidos(String apellidos){
+        return obj.buscar_apellidos(apellidos);
+    }
+
+    public Inversionista buscar_identificacion(String identificacion){
+        return obj.buscar_identificacion(identificacion);
+    }
+
+
 }

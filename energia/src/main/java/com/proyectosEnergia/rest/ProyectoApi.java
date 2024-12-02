@@ -1,5 +1,10 @@
 package com.proyectosEnergia.rest;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -13,75 +18,114 @@ import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.proyectosEnergia.controller.dao.services.ProyectoServices;
-import com.proyectosEnergia.controller.excepcion.ListEmptyException;
+import com.proyectosEnergia.controller.dao.services.RegistroServices;
 import com.proyectosEnergia.models.Proyecto;
 
 @Path("/proyecto")
 public class ProyectoApi {
 
+    @Path("/all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/all")
-    public Response getAllProyectos() throws ListEmptyException {
-        String responseJson = "";
+    
+    public Response getAllProyectos() throws Exception {
+        HashMap map = new HashMap<>();
         ProyectoServices ps = new ProyectoServices();
-        Gson gson = new Gson();
-        
-        try {
-            responseJson = "{\"data\":\"success!\",\"info\":" + 
-            gson.toJson(ps.listAll().toArray()) + "}";            
-        } catch (Exception e) {
-            e.printStackTrace();
-            responseJson = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
-            e.getMessage() + "\"}"; 
+        RegistroServices rs = new RegistroServices();
+        map.put("msg", "OK");
+        map.put("data", ps.listAll().toArray());
+        if (ps.listAll().isEmpty()) {
+            map.put("data", new Object[]{});
+            map.put("msg", "No hay proyectos en la base de datos");
         }
 
-        return Response.ok(responseJson).build();
+        rs.getRegistro().setNombre("Proyecto");
+        rs.getRegistro().setTipo("Consulta de proyectos");
+        rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
+        rs.save();
+
+        return Response.ok(map).build();
     }
 
+   
+    @Path("/get/{id}") 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/get/{id}")
-    public Response getProyectoById(@PathParam("id") Integer id) {
-        String jsonResponse = "";
+    public Response getProyecto(@PathParam("id") Integer id) throws Exception {
+        HashMap map = new HashMap<>();
         ProyectoServices ps = new ProyectoServices();
+        RegistroServices rs = new RegistroServices();
         
         try {
-            jsonResponse = "{\"data\":\"success!\",\"info\":" + 
-            ps.getProyectoJsonById(id) + "}";            
+            ps.setProyecto(ps.get(id));            
         } catch (Exception e) {
-            e.printStackTrace();
-            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
-            e.getMessage() + "\"}"; 
+            //Todo: handle exception
+        }
+        map.put("msg", "OK");
+        map.put("data", ps.getProyecto());
+        if (ps.getProyecto().getId() == null) {
+            map.put("data", "No existe el proyecto con ese id");
+            return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
         }
 
-        return Response.ok(jsonResponse).build();
+        rs.getRegistro().setNombre("Proyecto");
+        rs.getRegistro().setTipo("Consulta: "+ ps.getProyecto().getNombre());
+        rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
+        rs.save();
+
+        return Response.ok(map).build();
+    }
+
+    @Path("/listType")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getType() {
+        HashMap map = new HashMap<>();
+        ProyectoServices ps = new ProyectoServices();
+        map.put("msg", "OK");
+        map.put("data", ps.getTipos());
+        return Response.ok(map).build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/createProyecto")
-    public Response createProyecto(String json) {
-        String jsonResponse = "";
-        ProyectoServices ps = new ProyectoServices();
-        Gson gson = new Gson();
+    @Path("/save")
+    public Response save(HashMap map) {
+        HashMap res = new HashMap<>();
+        Gson g = new Gson();
+        String a = g.toJson(map);
+        System.out.println("**** " + a);
         try {
-            Proyecto p = gson.fromJson(json, Proyecto.class);
-            ps.setProyecto(p);
-            ps.save(p);
-            jsonResponse = "{\"data\":\"Proyecto created!\",\"info\":" 
-            + ps.toJson() + "}";
+            ProyectoServices ps = new ProyectoServices();
+            RegistroServices rs = new RegistroServices();
+            ps.getProyecto().setNombre(map.get(("nombre")).toString());
+            ps.getProyecto().setTipoEnergia(ps.getTipoEnergia(map.get("tipoEnergia").toString().toUpperCase()));
+            ps.getProyecto().setTiempoConstruccion(Integer.parseInt(map.get("tiempoConstruccion").toString()));
+            ps.getProyecto().setTiempoVida(Integer.parseInt(map.get("tiempoVida").toString()));
+            ps.getProyecto().setInversionTotal(Double.parseDouble(map.get("inversionTotal").toString()));
+            ps.getProyecto().setCapacidadGeneracionDiaria(Double.parseDouble(map.get("capacidadGeneracionDiaria").toString()));
+            ps.getProyecto().setCostoGeneracionDiaria(Double.parseDouble(map.get("costoGeneracionDiaria").toString()));
+            ps.save();
+
+            rs.getRegistro().setNombre("Proyecto");
+            rs.getRegistro().setTipo("Creacion: "+ ps.getProyecto().getNombre());
+            rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
+            rs.save();
             
+                        
+            res.put("msg", "OK");
+            res.put("data", "Proyecto guardado correctamente");
+            return Response.ok(map).build();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
-            e.getMessage() + "\"}"; 
+            e.printStackTrace();
+            res.put("msg", "Error");
+            res.put("data", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(map).build();
         }
-        
-        return Response.ok(jsonResponse).build();
+
     }
-    
+    /**
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/delete/{id}")
@@ -100,25 +144,38 @@ public class ProyectoApi {
         
         return Response.ok(jsonResponse).build();
     }
-
+    **/
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update/{id}")
-    public Response updateProyecto(@PathParam("id") Integer id, String json) {
-        String responseJson = "";
-        ProyectoServices ps = new ProyectoServices();
-        Gson gson = new Gson();
-        
+    @Path("/update/")
+    public Response updateProyecto(HashMap map) {
+        HashMap res = new HashMap<>();
         try {
-            Proyecto proyecto = gson.fromJson(json, Proyecto.class);
-            ps.updateProyecto(proyecto, id);
-            responseJson = "{\"message\":\"Proyecto updated successfully!\"}";
-            return Response.ok(responseJson).build();
+            ProyectoServices ps = new ProyectoServices();
+            RegistroServices rs = new RegistroServices();
+            ps.getProyecto().setNombre(map.get(("nombre")).toString());
+            ps.getProyecto().setTipoEnergia(ps.getTipoEnergia(map.get("tipoEnergia").toString()));
+            ps.getProyecto().setTiempoConstruccion(Integer.parseInt(map.get("tiempoConstruccion").toString()));
+            ps.getProyecto().setTiempoVida(Integer.parseInt(map.get("tiempoVida").toString()));
+            ps.getProyecto().setInversionTotal(Double.parseDouble(map.get("inversionTotal").toString()));
+            ps.getProyecto().setCapacidadGeneracionDiaria(Double.parseDouble(map.get("capacidadGeneracionDiaria").toString()));
+            ps.getProyecto().setCostoGeneracionDiaria(Double.parseDouble(map.get("costoGeneracionDiaria").toString()));
+            ps.update();
+
+            rs.getRegistro().setNombre("Proyecto");
+            rs.getRegistro().setTipo("Actualizacion: "+ ps.getProyecto().getNombre());
+            rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
+            rs.save();
+            
+            res.put("msg", "OK");
+            res.put("data", "Proyecto actualizado correctamente");
+            return Response.ok(res).build();
         } catch (Exception e) {
             e.printStackTrace();
-            responseJson = "{\"error\":\"" + e.getMessage() + "\"}";
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson).build();
+            res.put("msg", "Error");
+            res.put("data", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();
         }
     }
 }

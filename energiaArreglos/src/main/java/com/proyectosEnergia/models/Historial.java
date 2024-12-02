@@ -2,11 +2,11 @@ package com.proyectosEnergia.models;
 
 public class Historial {
     private int id;
-    private String tipoOperacion; // "CREATE", "READ", "UPDATE", "DELETE"
-    private String fecha; // Fecha de la operación
-    private String objeto; // JSON del objeto afectado
+    private String tipoOperacion; 
+    private String fecha; 
+    private String objeto; 
 
-    // Constructor, Getters y Setters
+
 
     public Historial(int id, String tipoOperacion, String fecha, String objeto) {
         this.id = id;
