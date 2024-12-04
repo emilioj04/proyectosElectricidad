@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,6 +19,7 @@ import com.google.gson.Gson;
 import com.proyectosEnergia.controller.dao.services.InversionistaServices;
 import com.proyectosEnergia.controller.dao.services.RegistroServices;
 import com.proyectosEnergia.models.Inversionista;
+import com.proyectosEnergia.controller.tda.list.LinkedList;
 
 
 @Path("/inversionista")
@@ -46,6 +46,79 @@ public class InversionistaApi {
 
         return Response.ok(map).build();
     }
+
+    @Path("/order/shellSort/{attribute}/{type}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response orderByShellSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        InversionistaServices is = new InversionistaServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList data = is.orderByShellSort(attribute, type);
+            map.put("data", data.toArray());
+            if (data.isEmpty()) {
+                map.put("msg", "No hay inversionistas en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+
+        }
+
+        return Response.ok(map).build();
+
+    }
+
+    @Path("/order/quickSort/{attribute}/{type}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response orderByQuickSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        InversionistaServices is = new InversionistaServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList data = is.orderByQuickSort(attribute, type);
+            map.put("data", data.toArray());
+            if (data.isEmpty()) {
+                map.put("msg", "No hay inversionistas en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+
+        }
+
+        return Response.ok(map).build();
+
+    }
+
+    @Path("/order/mergeSort/{attribute}/{type}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response orderByMergeSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        InversionistaServices is = new InversionistaServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList data = is.orderByMergeSort(attribute, type);
+            map.put("data", data.toArray());
+            if (data.isEmpty()) {
+                map.put("msg", "No hay inversionistas en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+
+        }
+
+        return Response.ok(map).build();
+
+    }
+    
 
     @Path("/get/{id}")
     @GET
@@ -103,40 +176,109 @@ public class InversionistaApi {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-        public Response save(HashMap map) {
-            HashMap res = new HashMap<>();
-            Gson g = new Gson();
-            String a = g.toJson(map);
-            System.out.println("**** " + a);
+    public Response save(HashMap map) {
+        HashMap res = new HashMap<>();
+        Gson g = new Gson();
+        String a = g.toJson(map);
+        System.out.println("**** " + a);
 
-            try {
-                InversionistaServices is = new InversionistaServices();
-                RegistroServices rs = new RegistroServices();
-                is.getInversionista().setNombre(map.get(("nombre")).toString());
-                is.getInversionista().setApellido(map.get(("apellido")).toString());
-                is.getInversionista().setTipoIdentificacion(is.getTipoIdentificacion(map.get(("tipoIdentificacion")).toString().toUpperCase()));
-                is.getInversionista().setIdentificacion(map.get(("identificacion")).toString());
-                is.getInversionista().setTipoInversionista(is.getTipoInversionista(map.get(("tipoInversionista")).toString().toUpperCase()));
-                is.save();
-                res.put("msg", "ok");
-                res.put("data", "Persona registrada correctamente");
-                
-                rs.getRegistro().setNombre("Inversionista");
-                rs.getRegistro().setTipo("Creacion "+ is.getInversionista().getNombre() + " " + is.getInversionista().getApellido() +""+ is.getInversionista().getIdentificacion());
-                rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm"))); 
-                rs.save();
-                    
-                return Response.ok(map).build();
-            } catch (Exception e) {
-                System.out.println("Error en sav data " + e.toString());
-                res.put("msg", "Error");
-                res.put("data", e.toString());
-                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
-            }
+        try {
+            InversionistaServices is = new InversionistaServices();
+            RegistroServices rs = new RegistroServices();
+            is.getInversionista().setNombre(map.get(("nombre")).toString());
+            is.getInversionista().setApellido(map.get(("apellido")).toString());
+            is.getInversionista().setTipoIdentificacion(is.getTipoIdentificacion(map.get(("tipoIdentificacion")).toString().toUpperCase()));
+            is.getInversionista().setIdentificacion(map.get(("identificacion")).toString());
+            is.getInversionista().setTipoInversionista(is.getTipoInversionista(map.get(("tipoInversionista")).toString().toUpperCase()));
+            is.save();
+            res.put("msg", "ok");
+            res.put("data", "Persona registrada correctamente");
             
+            rs.getRegistro().setNombre("Inversionista");
+            rs.getRegistro().setTipo("Creacion "+ is.getInversionista().getNombre() + " " + is.getInversionista().getApellido() +""+ is.getInversionista().getIdentificacion());
+            rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm"))); 
+            rs.save();
+                
+            return Response.ok(map).build();
+        } catch (Exception e) {
+            System.out.println("Error en sav data " + e.toString());
+            res.put("msg", "Error");
+            res.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
+        }
+        
+    }  
+
+    @Path("/search/lineal/{attribute}/{type}/{value}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchLineal(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        InversionistaServices is = new InversionistaServices();
+        try {
+            if (type == 1) {
+                LinkedList data = is.listAll().multipleLinealSearch(attribute, value);
+                map.put("data", data.toArray());
+
+                if (data.isEmpty()) {
+                    map.put("msg", "No hay inversionistas en la base de datos");
+                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+                } 
+            } else {
+                Inversionista data = (Inversionista) is.listAll().atomicLinealSearch(attribute, value);
+                map.put("data", data);
+
+                if (data == null) {
+                    map.put("msg", "No hay inversionistas en la base de datos");    
+                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+                }
+
+            }
+        } catch (Exception e) { 
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
         }
 
-    
+        return Response.ok(map).build();
+
+    }
+
+    @Path("/search/binary/{attribute}/{type}/{value}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchBinary(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        InversionistaServices is = new InversionistaServices();
+        try {
+            if (type == 1) {
+                LinkedList data = is.listAll().multipleBinarySearch(attribute, value);
+                map.put("data", data.toArray());
+
+                if (data.isEmpty()) {
+                    map.put("msg", "No hay inversionistas en la base de datos");
+                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+                } 
+            } else {
+                Inversionista data = (Inversionista) is.listAll().atomicBinarySearch(attribute, value);
+                map.put("data", data);
+
+                if (data == null) {
+                    map.put("msg", "No hay inversionistas en la base de datos");    
+                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+                }
+
+            }
+        } catch (Exception e) { 
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+
+        return Response.ok(map).build();
+
+    }
+
     @Path("/delete")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

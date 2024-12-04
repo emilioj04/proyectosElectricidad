@@ -58,21 +58,15 @@ public class InversionistaServices {
         return obj.get(id);
     }
 
-    public LinkedList orderInserSort(Integer type_order, String atributo){
-        return obj.orderInserSort(type_order, atributo);
+    public LinkedList orderByMergeSort(String atribute, Integer type) throws Exception {
+        return this.obj.listAll().orderByMergeSort(atribute, type);
     }
 
-    public LinkedList orderMergeSort (Integer type_order, String atributo){
-        return obj.orderMergeSort(type_order, atributo);
+    public LinkedList orderByShellSort(String atribue, Integer type) throws Exception {
+        return this.obj.listAll().orderByShellSort(atribue, type);
     }
 
-    public LinkedList<Inversionista> buscar_apellidos(String apellidos){
-        return obj.buscar_apellidos(apellidos);
+    public LinkedList orderByQuickSort(String atribue, Integer type) throws Exception {
+        return this.obj.listAll().orderByQuickSort(atribue, type);
     }
-
-    public Inversionista buscar_identificacion(String identificacion){
-        return obj.buscar_identificacion(identificacion);
-    }
-
-
 }

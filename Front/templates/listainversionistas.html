@@ -17,6 +17,80 @@
                         <h6 class="text-white text-capitalize ps-3">Tabla de Inversionistas</h6>
                     </div>
                 </div>
+                <form id="busqueda-form" class="mb-4">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-2">
+                            <label for="metodo" class="form-label">Método de Busqueda:</label>
+                            <select class="form-select" id="metodo-busq" name="metodo-busq">
+                                <option value="lineal">LinealSearch</option>
+                                <option value="binary">BinarySearch</option>
+                            </select>
+                        </div>  
+            
+                        <!-- Selector de atributo de búsqueda -->
+                        <div class="col-md-2">
+                            <label for="atributo" class="form-label">Buscar por:</label>
+                            <select class="form-select" id="atributo" name="atributo">
+                                <option value="identificacion">Identificacion</option>
+                                <option value="apellido">Apellido</option>
+                                <option value="nombre">Nombre</option>
+                                <option value="tipoInversionista">Tipo de Inversionista</option>
+                                
+                            </select>
+                        </div>
+            
+                        <!-- Campo de valor de búsqueda -->
+                        <div class="col-md-6">
+                            <label for="valor" class="form-label">Valor de búsqueda:</label>
+                            <input type="text" class="form-control" id="valor" name="valor" rows="1" required></input>
+                        </div>
+            
+                        <!-- Botón de buscar -->
+                        <div class="col-md-2 text-end">
+                            <label class="form-label d-block invisible">Buscar</label>
+                            <button type="submit" class="btn btn-primary w-100" id="btn-buscar">Buscar</button>
+                        </div>
+                    </div>
+                  </form>
+                  <form id="ordenamiento-form" class="mb-4">
+                    <div class="row g-2 align-items-center">
+                        <!-- Selector de método de ordenamiento -->
+                        <div class="col-md-4">
+                          <label for="metodo" class="form-label">Método de Ordenamiento:</label>
+                          <select class="form-select" id="metodo-ord" name="metodo-ord">
+                              <option value="shellSort">ShellSort</option>
+                              <option value="mergeSort">MergeSort</option>
+                              <option value="quickSort">QuickSort</option>
+                          </select>
+                        </div>  
+                      
+                        <!-- Selector de criterio de ordenamiento -->
+                        <div class="col-md-4">
+                            <label for="criterio" class="form-label">Ordenar por:</label>
+                            <select class="form-select" id="criterio" name="criterio">
+                                <option value="identificacion">Identificacion</option>
+                                <option value="nombre">Nombre</option>
+                                <option value="apellido">Apellido</option>
+                                <option value="tipoInversionista">Tipo de Inversionista</option>
+                            </select>
+                        </div>
+            
+                        <!-- Botones de orden -->
+                        <div class="col-md-4">
+                            <label for="id" class="form-label">Orden:</label>
+                            <select class="form-select" id="tipo" name="tipo">
+                                <option value="1"> Descendente</option>
+                                <option value="0"> Ascendete</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 text-end">
+                            <label class="form-label d-block invisible">Ordenar</label>
+                            <button type="submit" class="btn btn-primary w-100" id="btn-ordenar">Ordenar</button>
+                        </div>
+
+                    </div>
+                  </form>
                 <div class="card-body px-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
@@ -77,3 +151,38 @@
     </div>
 </div>
 {% endblock %}
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#ordenamiento-form').on('submit', function(event) {
+            event.preventDefault();
+            var metodo_o = $('#metodo-ord').val();
+            var criterio = $('#criterio').val();
+            var orden = $('#tipo').val();
+
+            if (metodo_o && criterio && orden !== undefined) { 
+              window.location.href = `/inversionistas/ordenar/${metodo_o}/${criterio}/${orden}`; 
+            } else { 
+              console.log("Valores de formulario inválidos."); 
+            }
+        });
+
+        $('#busqueda-form').on('submit', function(event) {
+            event.preventDefault();
+            var metodo_b = $('#metodo-busq').val();
+            var atributo = $('#atributo').val();
+            var type = "1";
+            var valor = $('#valor').val();
+
+            if (metodo_b && atributo && type && valor !== undefined) { 
+              window.location.href = `/inversionistas/search/${metodo_b}/${atributo}/${type}/${valor}`; 
+            } else { 
+              console.log("Valores de formulario inválidos."); 
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+

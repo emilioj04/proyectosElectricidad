@@ -27,6 +27,7 @@ public class InversionistaDao extends AdapterDao<Inversionista> {
     }
 
     public LinkedList getListAll() {
+        
         return listAll;
     }
 

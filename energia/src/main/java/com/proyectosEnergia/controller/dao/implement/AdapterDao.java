@@ -116,4 +116,5 @@ public class AdapterDao<T> implements InterfazDao<T> {
         String info = g.toJson(list.toArray());
         saveFile(info);
     }
+    
 }

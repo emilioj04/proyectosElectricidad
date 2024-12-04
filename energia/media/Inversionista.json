@@ -1,1 +1,27 @@
-[{"id":1,"identificacion":"12313123112","tipo":"CEDULA","nombre":"Verónica","apellido":"Chamba","tipoInversionista":"SIMPLE"},{"id":2,"identificacion":"1010101010","tipo":"CEDULA","nombre":"Omar","apellido":"Chilliguano","tipoInversionista":"SEMILLA"}]
+[
+    {"id": 1, "identificacion": "1723456789", "tipo": "CEDULA", "nombre": "María", "apellido": "Pérez", "tipoInversionista": "SIMPLE"},
+    {"id": 2, "identificacion": "0923456789", "tipo": "RUC", "nombre": "Carlos", "apellido": "Lopez", "tipoInversionista": "SEMILLA"},
+    {"id": 3, "identificacion": "1203456789", "tipo": "CEDULA", "nombre": "Luis", "apellido": "González", "tipoInversionista": "ANGEL"},
+    {"id": 4, "identificacion": "1122334455", "tipo": "PASAPORTE", "nombre": "Sofía", "apellido": "Mendoza", "tipoInversionista": "CORPORATIVO"},
+    {"id": 5, "identificacion": "1720012345", "tipo": "RUC", "nombre": "Pedro", "apellido": "Vargas", "tipoInversionista": "SIMPLE"},
+    {"id": 6, "identificacion": "1729876543", "tipo": "CEDULA", "nombre": "Lucía", "apellido": "Ramírez", "tipoInversionista": "SEMILLA"},
+    {"id": 7, "identificacion": "0912345678", "tipo": "RUC", "nombre": "Miguel", "apellido": "Fernández", "tipoInversionista": "ANGEL"},
+    {"id": 8, "identificacion": "1902837465", "tipo": "PASAPORTE", "nombre": "Valeria", "apellido": "Martínez", "tipoInversionista": "CORPORATIVO"},
+    {"id": 9, "identificacion": "1109876543", "tipo": "CEDULA", "nombre": "Javier", "apellido": "Ortiz", "tipoInversionista": "SIMPLE"},
+    {"id": 10, "identificacion": "1928374655", "tipo": "PASAPORTE", "nombre": "Ana", "apellido": "Pérez", "tipoInversionista": "SEMILLA"},
+    {"id": 11, "identificacion": "1029384756", "tipo": "CEDULA", "nombre": "Camila", "apellido": "Chávez", "tipoInversionista": "ANGEL"},
+    {"id": 12, "identificacion": "1827364556", "tipo": "RUC", "nombre": "Ricardo", "apellido": "Silva", "tipoInversionista": "CORPORATIVO"},
+    {"id": 13, "identificacion": "1738291023", "tipo": "PASAPORTE", "nombre": "Andrea", "apellido": "Paredes", "tipoInversionista": "SIMPLE"},
+    {"id": 14, "identificacion": "1122445566", "tipo": "CEDULA", "nombre": "Fernando", "apellido": "Torres", "tipoInversionista": "SEMILLA"},
+    {"id": 15, "identificacion": "1029384756", "tipo": "RUC", "nombre": "Daniela", "apellido": "Espinoza", "tipoInversionista": "ANGEL"},
+    {"id": 16, "identificacion": "1721234567", "tipo": "CEDULA", "nombre": "María", "apellido": "Fernández", "tipoInversionista": "SIMPLE"},
+    {"id": 17, "identificacion": "0919876543", "tipo": "RUC", "nombre": "Luis", "apellido": "Mendoza", "tipoInversionista": "SEMILLA"},
+    {"id": 18, "identificacion": "1101112233", "tipo": "PASAPORTE", "nombre": "Carlos", "apellido": "Pérez", "tipoInversionista": "CORPORATIVO"},
+    {"id": 19, "identificacion": "1923456781", "tipo": "RUC", "nombre": "Lucía", "apellido": "Vargas", "tipoInversionista": "ANGEL"},
+    {"id": 20, "identificacion": "1839384755", "tipo": "PASAPORTE", "nombre": "Miguel", "apellido": "Chávez", "tipoInversionista": "SIMPLE"},
+    {"id": 21, "identificacion": "1938475644", "tipo": "CEDULA", "nombre": "Ana", "apellido": "Silva", "tipoInversionista": "SEMILLA"},
+    {"id": 22, "identificacion": "1111222233", "tipo": "RUC", "nombre": "Pedro", "apellido": "Martínez", "tipoInversionista": "CORPORATIVO"},
+    {"id": 23, "identificacion": "1947382910", "tipo": "PASAPORTE", "nombre": "Andrea", "apellido": "Torres", "tipoInversionista": "ANGEL"},
+    {"id": 24, "identificacion": "1920192837", "tipo": "CEDULA", "nombre": "Valeria", "apellido": "Lopez", "tipoInversionista": "SIMPLE"},
+    {"id": 25, "identificacion": "1848474747", "tipo": "RUC", "nombre": "Sofía", "apellido": "Ortiz", "tipoInversionista": "SEMILLA"}
+]

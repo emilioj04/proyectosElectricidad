@@ -50,17 +50,15 @@ public class ProyectoServices {
         return obj.get(id);
     }
 
-    public LinkedList orderInserSort(Integer type_order, String atributo){
-        return obj.orderInserSort(type_order, atributo);
+    public LinkedList orderByMergeSort(String atribute, Integer type) throws Exception {
+        return this.obj.listAll().orderByMergeSort(atribute, type);
     }
 
-    public LinkedList orderMergeSort (Integer type_order, String atributo){
-        return obj.orderMergeSort(type_order, atributo);
+    public LinkedList orderByShellSort(String atribue, Integer type) throws Exception {
+        return this.obj.listAll().orderByShellSort(atribue, type);
     }
 
-
-    public LinkedList<Proyecto> buscar_nombre (String nombre){
-        return obj.buscar_Nombre(nombre);
+    public LinkedList orderByQuickSort(String atribue, Integer type) throws Exception {
+        return this.obj.listAll().orderByQuickSort(atribue, type);
     }
-
 }

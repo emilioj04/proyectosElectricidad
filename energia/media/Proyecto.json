@@ -1,1 +1,28 @@
-[{"id":1,"nombre":"ProyectoLoja","tipoEnergia":"EOLICA","tiempoConstruccion":14,"tiempoVida":14,"inversionTotal":231.243,"capacidadGeneracionDiaria":21321.45,"costoGeneracionDiaria":21312.32},{"id":2,"nombre":"Proyecto cuenca","tipoEnergia":"HIDRAULICA","tiempoConstruccion":15,"tiempoVida":213,"inversionTotal":1231231.45,"capacidadGeneracionDiaria":23424.45,"costoGeneracionDiaria":3455.45}]
+[
+    {"id": 1, "nombre": "ProyectoAmazonas", "tipoEnergia": "HIDRAULICA", "tiempoConstruccion": 24, "tiempoVida": 50, "inversionTotal": 4500000.00, "capacidadGeneracionDiaria": 32000.75, "costoGeneracionDiaria": 28000.50},
+    {"id": 2, "nombre": "ProyectoAndes", "tipoEnergia": "EOLICA", "tiempoConstruccion": 18, "tiempoVida": 25, "inversionTotal": 3200000.45, "capacidadGeneracionDiaria": 27000.40, "costoGeneracionDiaria": 24000.80},
+    {"id": 3, "nombre": "ProyectoSolano", "tipoEnergia": "SOLAR", "tiempoConstruccion": 12, "tiempoVida": 30, "inversionTotal": 1500000.00, "capacidadGeneracionDiaria": 15000.00, "costoGeneracionDiaria": 14000.20},
+    {"id": 4, "nombre": "ProyectoPereira", "tipoEnergia": "BIOMASA", "tiempoConstruccion": 30, "tiempoVida": 40, "inversionTotal": 5100000.70, "capacidadGeneracionDiaria": 36000.90, "costoGeneracionDiaria": 30000.45},
+    {"id": 5, "nombre": "ProyectoRioBravo", "tipoEnergia": "HIDRAULICA", "tiempoConstruccion": 20, "tiempoVida": 45, "inversionTotal": 4100000.30, "capacidadGeneracionDiaria": 31000.25, "costoGeneracionDiaria": 26000.75},
+    {"id": 6, "nombre": "ProyectoVillamar", "tipoEnergia": "EOLICA", "tiempoConstruccion": 16, "tiempoVida": 20, "inversionTotal": 2200000.85, "capacidadGeneracionDiaria": 20000.65, "costoGeneracionDiaria": 19000.40},
+    {"id": 7, "nombre": "ProyectoLuzVerde", "tipoEnergia": "SOLAR", "tiempoConstruccion": 10, "tiempoVida": 25, "inversionTotal": 1900000.20, "capacidadGeneracionDiaria": 12000.50, "costoGeneracionDiaria": 11000.30},
+    {"id": 8, "nombre": "ProyectoCayambe", "tipoEnergia": "HIDRAULICA", "tiempoConstruccion": 22, "tiempoVida": 60, "inversionTotal": 5000000.90, "capacidadGeneracionDiaria": 40000.00, "costoGeneracionDiaria": 35000.00},
+    {"id": 9, "nombre": "ProyectoEsmeralda", "tipoEnergia": "BIOMASA", "tiempoConstruccion": 28, "tiempoVida": 35, "inversionTotal": 4700000.60, "capacidadGeneracionDiaria": 33000.80, "costoGeneracionDiaria": 29000.70},
+    {"id": 10, "nombre": "ProyectoSolaris", "tipoEnergia": "SOLAR", "tiempoConstruccion": 14, "tiempoVida": 20, "inversionTotal": 1800000.50, "capacidadGeneracionDiaria": 17000.45, "costoGeneracionDiaria": 16000.25},
+    {"id": 11, "nombre": "ProyectoQuispe", "tipoEnergia": "HIDRAULICA", "tiempoConstruccion": 26, "tiempoVida": 55, "inversionTotal": 4800000.80, "capacidadGeneracionDiaria": 35000.60, "costoGeneracionDiaria": 30000.50},
+    {"id": 12, "nombre": "ProyectoHorizonte", "tipoEnergia": "EOLICA", "tiempoConstruccion": 20, "tiempoVida": 30, "inversionTotal": 3100000.45, "capacidadGeneracionDiaria": 25000.30, "costoGeneracionDiaria": 22000.10},
+    {"id": 13, "nombre": "ProyectoSolarAlpha", "tipoEnergia": "SOLAR", "tiempoConstruccion": 11, "tiempoVida": 22, "inversionTotal": 1200000.35, "capacidadGeneracionDiaria": 13000.20, "costoGeneracionDiaria": 11000.50},
+    {"id": 14, "nombre": "ProyectoMontañaVerde", "tipoEnergia": "BIOMASA", "tiempoConstruccion": 32, "tiempoVida": 50, "inversionTotal": 5200000.75, "capacidadGeneracionDiaria": 40000.10, "costoGeneracionDiaria": 35000.25},
+    {"id": 15, "nombre": "ProyectoOro", "tipoEnergia": "HIDRAULICA", "tiempoConstruccion": 18, "tiempoVida": 40, "inversionTotal": 4500000.90, "capacidadGeneracionDiaria": 32000.70, "costoGeneracionDiaria": 27000.60},
+    {"id": 16, "nombre": "ProyectoEcoDelta", "tipoEnergia": "EOLICA", "tiempoConstruccion": 19, "tiempoVida": 28, "inversionTotal": 2700000.40, "capacidadGeneracionDiaria": 21000.50, "costoGeneracionDiaria": 19000.80},
+    {"id": 17, "nombre": "ProyectoSolarisBeta", "tipoEnergia": "SOLAR", "tiempoConstruccion": 13, "tiempoVida": 25, "inversionTotal": 1600000.70, "capacidadGeneracionDiaria": 14000.30, "costoGeneracionDiaria": 13000.45},
+    {"id": 18, "nombre": "ProyectoTierraFértil", "tipoEnergia": "BIOMASA", "tiempoConstruccion": 30, "tiempoVida": 45, "inversionTotal": 4700000.55, "capacidadGeneracionDiaria": 36000.80, "costoGeneracionDiaria": 31000.65},
+    {"id": 19, "nombre": "ProyectoTungurahua", "tipoEnergia": "HIDRAULICA", "tiempoConstruccion": 21, "tiempoVida": 65, "inversionTotal": 5300000.85, "capacidadGeneracionDiaria": 41000.00, "costoGeneracionDiaria": 37000.25},
+    {"id": 20, "nombre": "ProyectoAmanecer", "tipoEnergia": "EOLICA", "tiempoConstruccion": 17, "tiempoVida": 35, "inversionTotal": 3400000.20, "capacidadGeneracionDiaria": 27000.90, "costoGeneracionDiaria": 24000.70},
+    {"id": 21, "nombre": "ProyectoSolarNova", "tipoEnergia": "SOLAR", "tiempoConstruccion": 10, "tiempoVida": 18, "inversionTotal": 1400000.60, "capacidadGeneracionDiaria": 12000.50, "costoGeneracionDiaria": 10000.35},
+    {"id": 22, "nombre": "ProyectoPáramo", "tipoEnergia": "BIOMASA", "tiempoConstruccion": 28, "tiempoVida": 38, "inversionTotal": 5000000.15, "capacidadGeneracionDiaria": 34000.65, "costoGeneracionDiaria": 31000.20},
+    {"id": 23, "nombre": "ProyectoNevado", "tipoEnergia": "HIDRAULICA", "tiempoConstruccion": 25, "tiempoVida": 60, "inversionTotal": 4800000.35, "capacidadGeneracionDiaria": 38000.45, "costoGeneracionDiaria": 34000.10},
+    {"id": 24, "nombre": "ProyectoBrisaNorte", "tipoEnergia": "EOLICA", "tiempoConstruccion": 22, "tiempoVida": 40, "inversionTotal": 3300000.90, "capacidadGeneracionDiaria": 28000.75, "costoGeneracionDiaria": 25000.55},
+    {"id": 25, "nombre": "ProyectoSolarZenith", "tipoEnergia": "SOLAR", "tiempoConstruccion": 12, "tiempoVida": 20, "inversionTotal": 1500000.80, "capacidadGeneracionDiaria": 16000.40, "costoGeneracionDiaria": 14000.50}
+]
+

@@ -63,16 +63,16 @@ public class InversionServices {
     public Inversion get(Integer id) throws Exception {
         return obj.get(id);
     }
-/* 
-    public LinkedList order(Integer type_order, String atributo) {
-        return obj.order(type_order, atributo);
-    }
-*/
-    public LinkedList order_object(Integer type, String atributo) throws Exception {
-        return obj.listAll().order(atributo, type);
+
+    public LinkedList orderByMergeSort(String atribute, Integer type) throws Exception {
+        return this.obj.listAll().orderByMergeSort(atribute, type);
     }
 
+    public LinkedList orderByShellSort(String atribue, Integer type) throws Exception {
+        return this.obj.listAll().orderByShellSort(atribue, type);
+    }
 
-
-
+    public LinkedList orderByQuickSort(String atribue, Integer type) throws Exception {
+        return this.obj.listAll().orderByQuickSort(atribue, type);
+    }
 }

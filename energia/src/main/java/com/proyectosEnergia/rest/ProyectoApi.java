@@ -15,10 +15,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.google.gson.Gson;
 import com.proyectosEnergia.controller.dao.services.ProyectoServices;
 import com.proyectosEnergia.controller.dao.services.RegistroServices;
+import com.proyectosEnergia.controller.tda.list.LinkedList;
+import com.proyectosEnergia.models.Proyecto;
 import com.proyectosEnergia.models.Proyecto;
 
 @Path("/proyecto")
@@ -27,7 +30,6 @@ public class ProyectoApi {
     @Path("/all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    
     public Response getAllProyectos() throws Exception {
         HashMap map = new HashMap<>();
         ProyectoServices ps = new ProyectoServices();
@@ -47,7 +49,78 @@ public class ProyectoApi {
         return Response.ok(map).build();
     }
 
-   
+    @Path("/order/shellSort/{attribute}/{type}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response orderByShellSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        ProyectoServices ps = new ProyectoServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList data = ps.orderByShellSort(attribute, type);
+            map.put("data", data.toArray());
+            if (data.isEmpty()) {
+                map.put("msg", "No hay Proyectos en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+
+        }
+
+        return Response.ok(map).build();
+
+    }
+
+    @Path("/order/quickSort/{attribute}/{type}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response orderByQuickSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        ProyectoServices ps = new ProyectoServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList data = ps.orderByQuickSort(attribute, type);
+            map.put("data", data.toArray());
+            if (data.isEmpty()) {
+                map.put("msg", "No hay Proyectos en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+
+        }
+
+        return Response.ok(map).build();
+
+    }
+
+    @Path("/order/mergeSort/{attribute}/{type}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response orderByMergeSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        ProyectoServices ps = new ProyectoServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList data = ps.orderByMergeSort(attribute, type);
+            map.put("data", data.toArray());
+            if (data.isEmpty()) {
+                map.put("msg", "No hay Proyectos en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+
+        }
+
+        return Response.ok(map).build();
+
+    }
+    
     @Path("/get/{id}") 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -125,6 +198,77 @@ public class ProyectoApi {
         }
 
     }
+
+    @Path("/search/lineal/{attribute}/{type}/{value}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchLineal(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        ProyectoServices is = new ProyectoServices();
+        try {
+            if (type == 1) {
+                LinkedList data = is.listAll().multipleLinealSearch(attribute, value);
+                map.put("data", data.toArray());
+
+                if (data.isEmpty()) {
+                    map.put("msg", "No hay Proyectos en la base de datos");
+                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+                } 
+            } else {
+                Proyecto data = (Proyecto) is.listAll().atomicLinealSearch(attribute, value);
+                map.put("data", data);
+
+                if (data == null) {
+                    map.put("msg", "No hay Proyectos en la base de datos");    
+                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+                }
+
+            }
+        } catch (Exception e) { 
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+
+        return Response.ok(map).build();
+
+    }
+
+    @Path("/search/binary/{attribute}/{type}/{value}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchBinary(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        ProyectoServices is = new ProyectoServices();
+        try {
+            if (type == 1) {
+                LinkedList data = is.listAll().multipleBinarySearch(attribute, value);
+                map.put("data", data.toArray());
+
+                if (data.isEmpty()) {
+                    map.put("msg", "No hay Proyectos en la base de datos");
+                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+                } 
+            } else {
+                Proyecto data = (Proyecto) is.listAll().atomicBinarySearch(attribute, value);
+                map.put("data", data);
+
+                if (data == null) {
+                    map.put("msg", "No hay Proyectos en la base de datos");    
+                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+                }
+
+            }
+        } catch (Exception e) { 
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+
+        return Response.ok(map).build();
+
+    }
+
 
     @Path("/delete")
     @POST
