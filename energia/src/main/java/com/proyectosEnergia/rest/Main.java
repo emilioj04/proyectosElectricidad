@@ -86,7 +86,7 @@ public class Main {
         rs.save();
 
         */
-
+        /*
         InversionServices is = new InversionServices();
         is.getInversion().setFecha(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
         is.getInversion().setIdInversionista(1);
@@ -99,7 +99,7 @@ public class Main {
         rs.getRegistro().setTipo("Creacion: "+ is.getInversion().getFecha());
         rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
         
-
+        */
 
 
         System.in.read();

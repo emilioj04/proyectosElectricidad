@@ -252,6 +252,8 @@ public class LinkedList<E> {
             Node<E> actually = getNode(post);
             E element = preview.getInfo();
             Node<E> next = actually.getNext();
+
+            preview.setNext(actually.getNext());
             actually = null;
             preview.setNext(next);
             size--;

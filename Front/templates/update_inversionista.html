@@ -11,14 +11,40 @@
 <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
     <div class="container mt-5">
         <h2>Actualizar Inversionista</h2>
-        <form action="{{ url_for('router.update_inversionista', id=id) }}" method="post">
+        <form action="{{ url_for('router.update_inversionista') }}" method="post">
             <div class="form-group">
-                <label for="nombre">Nombre del Inversionista:</label>
+                
+                <input type="hidden" class="form-control" id="id" name="id" value="{{ inversionista.id }}" required>
+            </div>
+            <div class="form-group">
+                <label for="tipoIdentificacion">Tipo de Identificacion</label>
+                <select class="form-control" id="tipoIdentificacion" name="tipoIdentificacion" required>
+                    <option value="{{ inversionista.tipoIdentificacion }}" disabled selected>{{ inversionista.tipoIdentificacion }}</option>
+                    {% for tipo in tipos_identificacion %}
+                        <option value="{{ tipo }}">{{ tipo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="nombre">Identificacion</label>
+                <input type="text" class="form-control" id="identificacion" name="identificacion" value="{{ inversionista.identificacion }}" required>
+            </div>            
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
                 <input type="text" class="form-control" id="nombre" name="nombre" value="{{ inversionista.nombre }}" required>
             </div>
             <div class="form-group">
-                <label for="tipoInversionista">Tipo de Inversionista:</label>
-                <input type="text" class="form-control" id="tipoInversionista" name="tipoInversionista" value="{{ inversionista.tipoInversionista }}" required>
+                <label for="nombre">Apellido</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" value="{{ inversionista.apellido }}" required>
+            </div>
+            <div class="form-group">
+                <label for="tipoInversionista">Tipo de Inversionista</label>
+                <select class="form-control" id="tipoInversionista" name="tipoInversionista" required>
+                    <option value="{{ inversionista.tipoInversionista }}" disabled selected>{{ inversionista.tipoInversionista }}</option>
+                    {% for tipo in tipos_inversionista %}
+                        <option value="{{ tipo }}">{{ tipo }}</option>
+                    {% endfor %}
+                </select>
             </div>
             
             <button type="submit" class="btn btn-primary mt-3">Actualizar</button>

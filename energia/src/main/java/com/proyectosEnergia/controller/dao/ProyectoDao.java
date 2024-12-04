@@ -46,7 +46,7 @@ public class ProyectoDao extends AdapterDao<Proyecto> {
     }
 
     public Boolean delete() throws Exception {
-        this.delete(getProyecto().getId() - 1);
+        this.delete(getProyecto().getId());
         this.listAll = this.listAll();
         return true;
     }

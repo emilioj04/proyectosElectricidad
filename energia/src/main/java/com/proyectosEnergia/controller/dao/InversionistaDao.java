@@ -61,7 +61,7 @@ public class InversionistaDao extends AdapterDao<Inversionista> {
     }
 
     public Boolean delete() throws Exception {
-        this.delete(getInversionista().getId() - 1);
+        this.delete(getInversionista().getId());
         this.listAll = this.listAll();
         return true;
     }

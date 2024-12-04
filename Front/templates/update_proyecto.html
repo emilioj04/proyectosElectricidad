@@ -13,6 +13,10 @@
         <h2>Actualizar Proyecto</h2>
         <form action="{{ url_for('router.update_proyecto', id=id) }}" method="post">
             <div class="form-group">
+                
+                <input type="hidden" class="form-control" id="id" name="id" value="{{ proyecto.id }}" required>
+            </div>
+            <div class="form-group">
                 <label for="nombre">Nombre del Proyecto:</label>
                 <input type="text" class="form-control" id="nombre" name="nombre" value="{{ proyecto.nombre }}" required>
             </div>
@@ -30,7 +34,7 @@
             </div>
             <div class="form-group">
                 <label for="inversion">Inversión (en USD):</label>
-                <input type="number" class="form-control" id="inversion" name="inversion" value="{{ proyecto.inversion }}" required>
+                <input type="number" class="form-control" id="inversionTotal" name="inversionTotal" value="{{ proyecto.inversionTotal }}" required>
             </div>
             <div class="form-group">
                 <label for="capacidadGeneracionDiaria">Capacidad de Generación Diaria (en kWh):</label>

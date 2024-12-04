@@ -21,6 +21,10 @@ public class InversionistaServices {
         return obj.update(); 
     }
 
+    public Boolean delete() throws Exception {
+        return obj.delete(); 
+    }
+
 
     public LinkedList listAll() {
         return obj.getListAll();

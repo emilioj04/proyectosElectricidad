@@ -26,9 +26,9 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Apellidos</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Identificación</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tipo de Inversionista</th>
-                                    <!-- <th class="text-secondary opacity-7">Detalle</th>
+                                    <th class="text-secondary opacity-7">Detalle</th>
                                     <th class="text-secondary opacity-7">Actualizar</th>
-                                    <th class="text-secondary opacity-7">Eliminar</th>-->
+                                    <th class="text-secondary opacity-7">Eliminar</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,21 +46,23 @@
                                         <td class="align-middle text-center text-sm">
                                             <h6 class="mb-0 text-sm">{{ inversionista.tipoInversionista }}</h6>
                                         </td>
-                                        <!--<td class="align-middle">
-                                            <a href="{{ url_for('router.inversionista', id=loop.index) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle de la inversión">
+                                        <td class="align-middle">
+                                            <a href="{{ url_for('router.inversionista', id=inversionista.id) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle de la inversión">
                                                 Detalle
                                             </a>
                                         </td>
                                         <td class="align-middle">
-                                            <a href="{{ url_for('router.update_inversionista', id=loop.index) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle del proyecto">
+                                            <a href="{{ url_for('router.edit_inversionista', id=inversionista.id) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle del proyecto">
                                                 Actualizar
                                             </a>
                                         </td>
+                                        
                                         <td>
-                                            <form action="{{ url_for('router.delete_inversionista', id=loop.index-1) }}" method="post" style="display:inline;">
+                                            <form action="{{ url_for('router.delete_inversionista') }}" method="post" style="display:inline;">
+                                                <input type="hidden" name="id" value="{{ inversionista.id }}">
                                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                             </form>
-                                        </td>-->
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -69,7 +71,7 @@
                 </div>
             </div>
             <div class="text-end mt-3">
-                <a href="/inversionista/add" class="btn btn-success">Crear Inversión</a>
+                <a href="/inversionista/add" class="btn btn-success">Crear Inversionista</a>
             </div>
         </div>
     </div>

@@ -19,15 +19,19 @@ def lista_proyectos(msg=''):
 @router.route('/proyecto/<int:id>')
 def proyecto(id):
     r = requests.get(f"http://localhost:8080/myapp/proyecto/get/{id}")
-    print(r.json())
     data = r.json()
     return render_template('proyecto.html', item=data["data"])
 
+
+
 @router.route('/proyecto/add', methods=['GET'])
 def add_proyecto():
-    return render_template('add_proyecto.html')
+    r1 = requests.get("http://localhost:8080/myapp/proyecto/listType")
+    tipos = r1.json().get("data", []) if r1.status_code == 200 else []
+    print(tipos)
+    return render_template('add_proyecto.html', tipos = tipos)
 
-@router.route('/proyecto/add', methods=['POST'])
+@router.route('/proyecto/add', methods=['POST'])    
 def save_proyecto():
     headers = {'Content-Type': 'application/json'}
     form = request.form
@@ -41,33 +45,44 @@ def save_proyecto():
         flash(str(data["data"]), category = 'error')
         return redirect (url_for('router.add_proyecto'))
 
+@router.route('/proyecto/update/<id>')
+def edit_proyecto(id):
+    r = requests.get("http://localhost:8080/myapp/proyecto/get/"+id)
+    data = r.json()
+    if(r.status_code == 200):
+        return render_template('update_proyecto.html',proyecto = data["data"])
+    else:
+        flash(data["data"], category='error')
+        return redirect(url_for('router.lista_proyectos'))
 
+@router.route('/proyecto/update', methods=['POST'])
+def update_proyecto():
+    headers = {'Content-type': 'application/json'}
+    form = request.form
+    dataForm = {"id": form["id"],"nombre": form["nombre"], "tipoEnergia":form["tipoEnergia"], "tiempoConstruccion":form["tiempoConstruccion"],"tiempoVida": form["tiempoVida"], "inversionTotal": form["inversionTotal"], "capacidadGeneracionDiaria": form["capacidadGeneracionDiaria"], "costoGeneracionDiaria": form["costoGeneracionDiaria"]}
+    r = requests.post("http://localhost:8080/myapp/proyecto/update", data=json.dumps(dataForm), headers=headers)
+    data = r.json()
 
-@router.route('/proyecto/update/<int:id>', methods=['GET', 'POST'])
-def update_proyecto(id):
-    if request.method == 'POST':
-        data = {
-            'nombre': request.form['nombre'],
-            'tipoEnergia': request.form['tipoEnergia'],
-            'tiempoConstruccion': request.form['tiempoConstruccion'],
-            'tiempoVida': request.form['tiempoVida'],
-            'inversion': request.form['inversion'],
-            'capacidadGeneracionDiaria': request.form['capacidadGeneracionDiaria'],
-            'costoGeneracionDiaria': request.form['costoGeneracionDiaria']
-        }
-        r = requests.put(f"http://localhost:8080/myapp/proyecto/update/{id-1}", json=data)
-        print(r.json())
+    if r.status_code == 200:
+        flash('Se ha actualizado correctamente', category='info')
         return redirect(url_for('router.lista_proyectos'))
     else:
-        r = requests.get(f"http://localhost:8080/myapp/proyecto/get/{id}")
-        proyecto = r.json().get('info', {})
-        return render_template('update_proyecto.html', proyecto=proyecto, id=id)
+        flash('No se ha podido actualizar', category='error')
+        return redirect(url_for('router.lista_proyectos')) 
 
 
-@router.route('/proyecto/delete/<int:id>', methods=['POST'])
-def delete_proyecto(id):
-    r = requests.delete(f"http://localhost:8080/myapp/proyecto/delete/{id}")
-    print(r.json())
+@router.route('/proyecto/delete', methods=['POST'])
+def delete_proyecto():
+    headers = {'Content-Type': 'application/json'}
+    form = request.form
+    dataForm = {"id": form["id"]}
+    r = requests.post("http://localhost:8080/myapp/proyecto/delete", data=json.dumps(dataForm), headers=headers)
+
+    if r.status_code == 200:
+        flash('Se ha eliminado correctamente', category='info')
+    else:
+        data = r.json()
+        flash(data["data"], category='error')
     return redirect(url_for('router.lista_proyectos'))
 
 @router.route('/inversionistas/')
@@ -86,8 +101,13 @@ def inversionista(id):
 
 @router.route('/inversionista/add', methods=['GET'])
 def add_inversionista():
-    
-    return render_template('add_inversionista.html')
+    r1 = requests.get("http://localhost:8080/myapp/inversionista/listTypeIdentificacion")
+    r2 = requests.get("http://localhost:8080/myapp/inversionista/listTypeInversionista")
+
+    tipos_identificacion = r1.json().get("data", []) if r1.status_code == 200 else []
+    tipos_inversionista = r2.json().get("data", []) if r2.status_code == 200 else []
+    return render_template('add_inversionista.html', tipos_identificacion=tipos_identificacion, tipos_inversionista=tipos_inversionista
+    )
 
 
 @router.route('/inversionista/add', methods=['POST'])
@@ -106,26 +126,58 @@ def save_inversionista():
     
     
 
-@router.route('/inversionista/delete/<int:id>', methods=['GET', 'POST'])
-def delete_inversionista(id):
-    r = requests.delete(f"http://localhost:8080/myapp/inversionista/delete/{id}")
-    print(r.json())
-    return redirect(url_for('router.lista_inversionistas'))
+@router.route('/inversionista/delete', methods=['POST'])
+def delete_inversionista():
+    headers = {'Content-Type': 'application/json'}
+    form = request.form
+    dataForm = {"id": form["id"]}
+    r = requests.post("http://localhost:8080/myapp/inversionista/delete", data=json.dumps(dataForm), headers=headers)
 
-@router.route('/inversionista/update/<int:id>', methods=['GET', 'POST'])
-def update_inversionista(id):
-    if request.method == 'POST':
-        data = {
-            'nombre': request.form['nombre'],
-            'tipoInversionista': request.form['tipoInversionista'],
-        }
-        r = requests.put(f"http://localhost:8080/myapp/inversionista/update/{id-1}", json=data)
-        print(r.json())
+    if r.status_code == 200:
+        flash('Se ha eliminado correctamente', category='info')
+    else:
+        data = r.json()
+        flash(data["data"], category='error')
+    return redirect(url_for('router.lista_inversionistas'))
+    
+
+@router.route('/inversionista/actualizar/<id>')
+def edit_inversionista(id):
+    r = requests.get("http://localhost:8080/myapp/inversionista/get/"+id)
+    r1 = requests.get("http://localhost:8080/myapp/inversionista/listTypeIdentificacion")
+    r2 = requests.get("http://localhost:8080/myapp/inversionista/listTypeInversionista")
+    data = r.json()
+    tipos_identificacion = r1.json().get("data", []) if r1.status_code == 200 else []
+    tipos_inversionista = r2.json().get("data", []) if r2.status_code == 200 else []
+    if(r.status_code == 200):
+        return render_template('update_inversionista.html',inversionista = data["data"], tipos_identificacion=tipos_identificacion, tipos_inversionista=tipos_inversionista)
+    else:
+        flash(data["data"], category='error')
+        return redirect(url_for('router.lista_inversionistas'))
+
+
+
+@router.route('/inversionista/update', methods=['POST'])
+def update_inversionista():
+    headers = {'Content-type': 'application/json'}
+    form = request.form
+
+    dataF = {"id": form["id"],"nombre": form["nombre"], "apellido": form ["apellido"], "tipoIdentificacion":form["tipoIdentificacion"],"identificacion":form["identificacion"],"tipoInversionista": form["tipoInversionista"]}
+    print(dataF)
+    r = requests.post("http://localhost:8080/myapp/inversionista/update", data=json.dumps(dataF), headers=headers)
+    print(r)
+    dat = r.json()
+    if(r.status_code == 200):
+        flash("Se ha actualizado correctamente", category='info')
         return redirect(url_for('router.lista_inversionistas'))
     else:
-        r = requests.get(f"http://localhost:8080/myapp/inversionista/get/{id}")
-        inversionista = r.json().get('info', {})
-        return render_template('update_inversionista.html', inversionista=inversionista, id=id)
+        flash(str(dat["data"]), category='error')
+        return redirect(url_for('router.lista_inversionistas'))
+
+
+
+
+
 
 @router.route('/inversiones/')
 def lista_inversiones(msg = ''):
@@ -168,66 +220,34 @@ def lista_inversiones(msg = ''):
 @router.route('/inversion/<int:id>')
 def inversion(id):
     r = requests.get(f"http://localhost:8080/myapp/inversion/get/{id}")
-    print(r.json())
-    return render_template('inversion.html', item=r.json()['info'])
-
-@router.route('/inversion/add', methods=['GET', 'POST'])
+    data = r.json()
+    return render_template('inversion.html', item=data["data"])
+    
+@router.route('/inversion/add', methods=['GET'])
 def add_inversion():
-    if request.method == 'POST':
-        proyecto_data = {
-            'nombre': request.form['nombre_proyecto'],
-            'tipoEnergia': request.form['tipoEnergia'],
-            'tiempoConstruccion': request.form['tiempoConstruccion'],
-            'tiempoVida': request.form['tiempoVida'],
-            'inversion': request.form['inversion'],
-            'capacidadGeneracionDiaria': request.form['capacidadGeneracionDiaria'],
-            'costoGeneracionDiaria': request.form['costoGeneracionDiaria']
-        }
-
-        r_proyecto = requests.post("http://localhost:8080/myapp/proyecto/createProyecto", json=proyecto_data)
-        
-        try:
-            proyecto_info = r_proyecto.json()
-            print("Respuesta del proyecto:", proyecto_info)  
-            if not isinstance(proyecto_info, dict):
-                raise ValueError("Respuesta del proyecto no es un objeto válido.")
-        except (requests.exceptions.JSONDecodeError, ValueError) as e:
-            print(f"Error al decodificar la respuesta JSON del proyecto: {e}")
-            return f"Error al guardar el proyecto: {r_proyecto.status_code} - {r_proyecto.text}", 500
-
-        inversionista_data = {
-            'nombre': request.form['nombre_inversionista'],
-            'tipoInversionista': request.form['tipoInversionista']
-        }
-
-        r_inversionista = requests.post("http://localhost:8080/myapp/inversionista/createInversionista", json=inversionista_data)
-
-        try:
-            inversionista_info = r_inversionista.json()
-            print("Respuesta del inversionista:", inversionista_info) 
-            if not isinstance(inversionista_info, dict):
-                raise ValueError("Respuesta del inversionista no es un objeto válido.")
-        except (requests.exceptions.JSONDecodeError, ValueError) as e:
-            print(f"Error al decodificar la respuesta JSON del inversionista: {e}")
-            return f"Error al guardar el inversionista: {r_inversionista.status_code} - {r_inversionista.text}", 500
-
-        inversion_data = {
-            'proyecto': proyecto_data,  
-            'inversionista': inversionista_data,  
-            'montoInvertido': request.form['montoInvertido']
-        }
-        
-        r_inversion = requests.post("http://localhost:8080/myapp/inversion/createInversion", json=inversion_data)
-
-        try:
-            print(r_inversion.json()) 
-        except requests.exceptions.JSONDecodeError:
-            print(f"Error al decodificar la respuesta JSON de la inversión: {r_inversion.text}")
-            return f"Error al guardar la inversión: {r_inversion.status_code} - {r_inversion.text}", 500
-
-        return redirect('/inversiones')
-
     return render_template('add_inversion.html')
+
+@router.route('/inversion/save', methods=['POST'])
+def save_inversion():
+    headers = {'Content-Type': 'application/json'}
+    form = request.form
+    dataForm = {"investor": int(form["idInversionista"]), "project": int(form["idProyecto"]), "montoInvertido": float(form["montoInvertido"]), "fecha": str(form["fecha"])}
+    r = requests.post("http://localhost:8080/myapp/inversion/save", data=json.dumps(dataForm), headers=headers)
+    data = r.json()
+    print(data)
+    print(f"ID Inversionista: {form['idInversionista']}")
+    print(f"ID Proyecto: {form['idProyecto']}")
+
+    print("lafecha:")
+    print(request.form["fecha"])
+
+    if r.status_code == 200:
+        flash('Se guardo correctamente la inversion', category = 'info')
+        return redirect (url_for('router.lista_inversiones'))
+    else:
+        print("error aqui")
+        flash(str(data["data"]), category = 'error')
+        return redirect (url_for('router.add_inversion'))
 
 @router.route('/inversion/delete/<int:id>', methods=['GET', 'POST'])
 def delete_inversion(id):
@@ -235,19 +255,37 @@ def delete_inversion(id):
     print(r.json())
     return redirect(url_for('router.lista_inversiones'))
 
-@router.route('/inversion/update/<int:id>', methods=['GET', 'POST'])
-def update_inversion(id):
-    if request.method == 'POST':
-        data = {
-            'montoInvertido': request.form['montoInvertido']
-        }
-        r = requests.put(f"http://localhost:8080/myapp/inversion/update/{id-1}", json=data)
-        print(r.json())
+@router.route('/inversion/actualizar/<int:id>')
+def edit_inversion(id):
+    r = requests.get("http://localhost:8080/myapp/inversion/get/"+str(id))
+    data = r.json()
+    if(r.status_code == 200):
+        return render_template('update_inversion.html',inversion = data["data"])
+    else:
+        flash(data["data"], category='error')
+        return redirect(url_for('router.lista_inversiones'))
+
+@router.route('/inversion/update', methods=['POST'])
+def update_inversion():
+    headers = {'Content-Type': 'application/json'}
+    form = request.form
+
+    dataForm = {"id": form["id"], "investor": int(form["idInversionista"]), "project": int(form["idProyecto"]), "montoInvertido": float(form["montoInvertido"]), "fecha": str(form["fecha"])}
+    print("Datos enviados al servidor externo:", dataForm)
+    print(dataForm)
+    r = requests.post("http://localhost:8080/myapp/inversion/update", data=json.dumps(dataForm), headers=headers)
+    print(r)
+    data = r.json()
+    if(r.status_code == 200):
+        flash("Se ha actualizado correctamente", category='info')
         return redirect(url_for('router.lista_inversiones'))
     else:
-        r = requests.get(f"http://localhost:8080/myapp/inversion/get/{id}")
-        inversion = r.json().get('info', {})
-        return render_template('update_inversion.html', inversion=inversion, id=id)
+        flash(str(data["data"]), category='error')
+        print(data)
+        return redirect(url_for('router.edit_inversion', id = form["id"]))
+
+    
+
 
 @router.route('/historial/')
 def historial(msg=''):

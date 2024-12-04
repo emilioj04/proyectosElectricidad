@@ -17,7 +17,12 @@
         </div>
         <div class="form-group">
             <label for="tipoEnergia">Tipo de Energía:</label>
-            <input type="text" class="form-control" id="tipoEnergia" name="tipoEnergia" required>
+            <select class="form-control" id="tipoEnergia" name="tipoEnergia" required>
+                <option value="" disabled selected>Seleccione un tipo</option>
+                {% for tipo in tipos%}
+                    <option value="{{ tipo }}">{{ tipo }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group">
             <label for="tiempoConstruccion">Tiempo de Construcción (en meses):</label>

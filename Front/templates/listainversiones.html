@@ -29,6 +29,7 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Monto Invertido</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Fecha de Inversion</th>
                                     <th class="text-secondary opacity-7">Detalle</th>
+                                    <th class="text-secondary opacity-7">Actualizar</th>
                                     <th class="text-secondary opacity-7">Eliminar</th>
                                 </tr>
                             </thead>
@@ -56,6 +57,16 @@
                                         </td>
                                         <td class="align-middle text-center">
                                             <p class="text-xs font-weight-bold mb-0">{{ inversion.fecha }}</p>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <a href="{{ url_for('router.inversion', id=inversion.id) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle del inversionista">
+                                                Detalle
+                                            </a>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <a href="{{ url_for('router.edit_inversion', id=inversion.id) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Actualizar inversion">
+                                                Actualizar
+                                            </a>
                                         </td>
                                         
                                     </tr>

@@ -3,16 +3,43 @@
 {% block title %}Actualizar Inversión{% endblock %}
 
 {% block content %}
-
-<div class="container mt-5">
+<div class="container">
     <h2>Actualizar Inversión</h2>
-    <form method="POST" action="{{ url_for('router.update_inversion', id=id) }}">
+    <p>Por favor actualice los datos de la inversión</p>
+    <form id="updateInversionForm" action="{{ url_for('router.update_inversion') }}" method="post">
+        <div class="form-group">   
+            <input type="hidden" class="form-control" id="id" name="id" value="{{ inversion.id }}" required>
+        </div>
+        <div class="form-group">
+            <label for="idInversionista">Id Inversionista</label>
+            <input type="number" class="form-control" id="idInversionista" name="idInversionista" 
+                value="{{ inversion.idInversionista }}" required>
+        </div>
+        <div class="form-group">
+            <label for="idProyecto">Id Proyecto</label>
+            <input type="number" class="form-control" id="idProyecto" name="idProyecto" 
+                value="{{ inversion.idProyecto }}" required>
+        </div>
+        <div class="form-group">
+            <label for="montoInvertido">Monto Invertido</label>
+            <input type="float" class="form-control" id="montoInvertido" name="montoInvertido" 
+                value="{{ inversion.montoInvertido }}" required>
+        </div>
         <div class="form-group mb-3">
-            <label for="montoInvertido">Monto de Inversión (en USD):</label>
-            <input type="number" class="form-control" id="montoInvertido" name="montoInvertido" value="{{ inversion.montoInvertido }}" required>
+            <label for="fecha">Fecha de Inversión:</label>
+            <input type="date" class="form-control" id="fecha" name="fecha" 
+                value="{{ inversion.fecha }}" required>
         </div>
         <button type="submit" class="btn btn-primary">Actualizar</button>
     </form>
 </div>
 
+<script>
+    // Configurar el campo de fecha en caso de que no venga un valor desde el servidor
+    const fechaInput = document.getElementById('fecha');
+    if (!fechaInput.value) {
+        fechaInput.type = 'date';
+        fechaInput.value = new Date().toISOString().substring(0, 10);
+    }
+</script>
 {% endblock %}

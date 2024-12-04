@@ -125,37 +125,60 @@ public class ProyectoApi {
         }
 
     }
-    /**
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/delete/{id}")
-    public Response deleteProyecto(@PathParam("id") Integer id) {
-        String jsonResponse = "";
-        ProyectoServices ps = new ProyectoServices();
-        
-        try {
-            ps.deleteProyecto(id);
-            jsonResponse = "{\"data\":\"Proyecto deleted!\"}";
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonResponse = "{\"data\":\"ErrorMsg\",\"info\":\"" + 
-            e.getMessage() + "\"}"; 
-        }
-        
-        return Response.ok(jsonResponse).build();
-    }
-    **/
-    @PUT
+
+    @Path("/delete")
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteProyecto(HashMap map) {
+        HashMap res = new HashMap<>();
+
+        try {
+            ProyectoServices ps = new ProyectoServices();
+            RegistroServices rs = new RegistroServices();
+
+            Integer id = Integer.parseInt(map.get("id").toString());
+            Proyecto proyecto = ps.get(id);
+
+            if (proyecto == null || proyecto.getId() == null) {
+                res.put("msg", "Error");
+                res.put("data", "No existe el proyecto con ese id");
+                return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
+            }
+
+            ps.setProyecto(proyecto);
+            ps.delete();
+
+            res.put("msg", "OK");
+            res.put("data", "Proyecto eliminado correctamente");
+
+            rs.getRegistro().setNombre("Proyecto");
+            rs.getRegistro().setTipo("Eliminacion: "+ ps.getProyecto().getNombre());
+            rs.getRegistro().setHora(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd//HH:mm")));
+            rs.save();
+
+            return Response.ok(map).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.put("msg", "Error");
+            res.put("data", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();
+        }
+        
+    }
+    
     @Path("/update/")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateProyecto(HashMap map) {
         HashMap res = new HashMap<>();
         try {
             ProyectoServices ps = new ProyectoServices();
             RegistroServices rs = new RegistroServices();
+            ps.setProyecto(ps.get(Integer.parseInt(map.get("id").toString())));
             ps.getProyecto().setNombre(map.get(("nombre")).toString());
-            ps.getProyecto().setTipoEnergia(ps.getTipoEnergia(map.get("tipoEnergia").toString()));
+            ps.getProyecto().setTipoEnergia(ps.getTipoEnergia(map.get("tipoEnergia").toString().toUpperCase()));
             ps.getProyecto().setTiempoConstruccion(Integer.parseInt(map.get("tiempoConstruccion").toString()));
             ps.getProyecto().setTiempoVida(Integer.parseInt(map.get("tiempoVida").toString()));
             ps.getProyecto().setInversionTotal(Double.parseDouble(map.get("inversionTotal").toString()));

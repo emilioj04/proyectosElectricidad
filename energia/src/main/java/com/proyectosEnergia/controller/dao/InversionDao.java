@@ -11,6 +11,7 @@ public class InversionDao extends AdapterDao<Inversion> {
 
     public InversionDao() {
         super(Inversion.class);
+        this.listAll = this.listAll();
     }
 
     public Inversion getInversion() {
@@ -25,9 +26,6 @@ public class InversionDao extends AdapterDao<Inversion> {
     }
 
     public LinkedList getListAll() {
-        if (listAll == null) {
-            this.listAll = listAll();
-        }
         return listAll;
     }
 
@@ -40,7 +38,13 @@ public class InversionDao extends AdapterDao<Inversion> {
     }
 
     public Boolean update() throws Exception {
-        this.merge(getInversion(), getInversion().getId() - 1);
+        this.merge(getInversion(), getInversion().getId()-1);
+        this.listAll = this.listAll();
+        return true;
+    }
+
+    public Boolean delete() throws Exception {
+        this.delete(getInversion().getId());
         this.listAll = this.listAll();
         return true;
     }

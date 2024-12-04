@@ -17,25 +17,31 @@
             <input type="text" class="form-control" id="nombre" name="nombre" required>
         </div>
         <div class="form-group">
-            <label for="nombre">Apellido</label>
+            <label for="apellido">Apellido:</label>
             <input type="text" class="form-control" id="apellido" name="apellido" required>
         </div>
         <div class="form-group">
-            <label for="nombre">Tipo de Identificación</label>
-            <p>Tipos de Identificación: CEDULA, RUC, PASAPORTE </p>
-            <input type="text" class="form-control" id="tipoIdentificacion" name="tipoIdentificacion" required>
+            <label for="tipoIdentificacion">Tipo de Identificación:</label>
+            <select class="form-control" id="tipoIdentificacion" name="tipoIdentificacion" required>
+                <option value="" disabled selected>Seleccione un tipo</option>
+                {% for tipo in tipos_identificacion %}
+                    <option value="{{ tipo }}">{{ tipo }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group">
             <label for="identificacion">Identificación:</label>
             <input type="text" class="form-control" id="identificacion" name="identificacion" required>
         </div>
-
         <div class="form-group">
-            <label for="tipoEnergia">Tipo de Inversionista:</label>
-            <p>Tipos de Inversionista: </p>
-            <input type="text" class="form-control" id="tipoInversionista" name="tipoInversionista" required>
+            <label for="tipoInversionista">Tipo de Inversionista:</label>
+            <select class="form-control" id="tipoInversionista" name="tipoInversionista" required>
+                <option value="" disabled selected>Seleccione un tipo</option>
+                {% for tipo in tipos_inversionista %}
+                    <option value="{{ tipo }}">{{ tipo }}</option>
+                {% endfor %}
+            </select>
         </div>
-        
         <button type="submit" class="btn btn-primary">Agregar</button>
     </form>
 </div>

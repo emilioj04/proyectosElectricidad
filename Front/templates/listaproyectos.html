@@ -61,17 +61,18 @@
                                             <p class="text-xs font-weight-bold mb-0">{{ proyecto.costoGeneracionDiaria}}</p>
                                         </td>
                                         <td class="align-middle">
-                                            <a href="{{ url_for('router.proyecto', id=loop.index) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle del proyecto">
+                                            <a href="{{ url_for('router.proyecto', id=proyecto.id) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle del proyecto">
                                                 Detalle
                                             </a>
                                         </td>
                                         <td class="align-middle">
-                                            <a href="{{ url_for('router.update_proyecto', id=loop.index) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle del proyecto">
+                                            <a href="{{ url_for('router.edit_proyecto', id=proyecto.id) }}" class="btn btn-primary text-white" data-toggle="tooltip" data-original-title="Ver detalle del proyecto">
                                                 Actualizar
                                             </a>
                                         </td>
                                         <td>
-                                            <form action="{{ url_for('router.delete_proyecto', id=loop.index-1) }}" method="post" style="display:inline;">
+                                            <form action="{{ url_for('router.delete_proyecto') }}" method="post" style="display:inline;">
+                                                <input type="hidden" name="id" value="{{ proyecto.id }}">
                                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                             </form>
                                         </td>
