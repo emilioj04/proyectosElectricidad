@@ -62,7 +62,7 @@ public class pruebaNumeros {
     }
 
     public static void main(String[] args) {
-        LinkedList<Integer> lista = crearLista(10000);
+        LinkedList<Integer> lista = crearLista(25000);
         try {
             System.out.println("Shell: " + testOrder(lista, "shell", 0) + " ms");
             System.out.println("Merge: " + testOrder(lista, "merge", 0) + " ms");

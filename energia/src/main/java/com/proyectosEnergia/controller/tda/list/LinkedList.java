@@ -1,7 +1,8 @@
 package com.proyectosEnergia.controller.tda.list;
 
-import com.proyectosEnergia.controller.excepcion.ListEmptyException;
 import java.lang.reflect.Method;
+
+import com.proyectosEnergia.controller.excepcion.ListEmptyException;
 
 public class LinkedList<E> {
     private Node<E> header;
@@ -825,6 +826,7 @@ public class LinkedList<E> {
         }
 
     }
+
 
     private Boolean atrribute_compare(String attribute, E a, E b, Integer type) throws Exception {
         return compare(exist_attribute(a, attribute), exist_attribute(b, attribute), type);

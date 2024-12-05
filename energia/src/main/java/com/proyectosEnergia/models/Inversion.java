@@ -1,7 +1,5 @@
 package com.proyectosEnergia.models;
 
-import java.util.Date;
-
 public class Inversion {
     private Integer id;
     private Double montoInvertido;
