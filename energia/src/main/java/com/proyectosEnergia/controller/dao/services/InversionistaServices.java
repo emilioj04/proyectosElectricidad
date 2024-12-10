@@ -2,9 +2,9 @@ package com.proyectosEnergia.controller.dao.services;
 
 import com.proyectosEnergia.controller.dao.InversionistaDao;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
-import com.proyectosEnergia.models.Inversionista;
 import com.proyectosEnergia.models.Enumerator.TipoIdentificacion;
 import com.proyectosEnergia.models.Enumerator.TipoInversionista;
+import com.proyectosEnergia.models.Inversionista;
 
 public class InversionistaServices {
     private InversionistaDao obj;
@@ -58,15 +58,5 @@ public class InversionistaServices {
         return obj.get(id);
     }
 
-    public LinkedList orderByMergeSort(String atribute, Integer type) throws Exception {
-        return this.obj.listAll().orderByMergeSort(atribute, type);
-    }
-
-    public LinkedList orderByShellSort(String atribue, Integer type) throws Exception {
-        return this.obj.listAll().orderByShellSort(atribue, type);
-    }
-
-    public LinkedList orderByQuickSort(String atribue, Integer type) throws Exception {
-        return this.obj.listAll().orderByQuickSort(atribue, type);
-    }
+    
 }

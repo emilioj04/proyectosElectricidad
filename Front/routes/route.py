@@ -13,13 +13,13 @@ def home():
 @router.route('/proyectos')
 def lista_proyectos(msg=''):
     r = requests.get("http://localhost:8080/myapp/proyecto/all")
-    #print(r.json())
     data = r.json()
     return render_template('listaproyectos.html', lista=data["data"], message = msg)
 
+#Ordenar proyectos por metodo, atributo y tipo
 @router.route('/proyectos/ordenar/<metodo>/<atributo>/<tipo>')
 def ordenar_proyectos(metodo, atributo, tipo):
-    url = URL + "proyecto/order/"+metodo+"/"+atributo+"/"+tipo
+    url = URL + "proyecto/ordenar/"+metodo+"/"+atributo+"/"+tipo
     r = requests.get(url)
     data = r.json()
     if(r.status_code == 200):
@@ -28,8 +28,20 @@ def ordenar_proyectos(metodo, atributo, tipo):
     else:
         flash('No se pudo ordenar', category = 'error')
         return redirect(lista_proyectos)
-    
 
+#Buscar proyectos por metodo, atributo, valor
+@router.route('/proyectos/busqueda/<metodo>/<atributo>/<valor>')
+def search_proyectos(metodo, atributo, valor):
+    url = URL + "proyecto/busqueda/" + metodo+"/"+atributo+"/"+valor
+    r = requests.get(url)
+    data = r.json()
+    if(r.status_code == 200):
+        flash('Proyecto Encontrado', category ='info')
+        return render_template('listaproyectos.html', lista=data["data"])
+    else : 
+        flash('No se ha podido encontrar', category='error')
+        return redirect('lista_proyectos')
+ 
 
 @router.route('/proyecto/<int:id>')
 def proyecto(id):
@@ -100,17 +112,7 @@ def delete_proyecto():
         flash(data["data"], category='error')
     return redirect(url_for('router.lista_proyectos'))
 
-@router.route('/proyectos/search/<metodo>/<atributo>/<tipo>/<valor>')
-def search_proyectos(metodo, atributo, tipo, valor):
-    url = URL + "proyecto/search/" + metodo+"/"+atributo+"/"+tipo+"/"+valor
-    r = requests.get(url)
-    data = r.json()
-    if(r.status_code == 200):
-        flash('Proyecto Encontrado', category ='info')
-        return render_template('listaproyectos.html', lista=data["data"])
-    else : 
-        flash('No se ha podido encontrar', category='error')
-        return redirect('lista_proyectos')
+
 
 @router.route('/inversionistas/')
 def lista_inversionistas(msg=''):
@@ -126,15 +128,13 @@ def inversionista(id):
     data = r.json()
     return render_template('inversionista.html', item=data["data"])
 
-
+#Ordenar inversionistas por metodo, atributo y tipo
 @router.route('/inversionistas/ordenar/<metodo>/<atributo>/<tipo>')
 def ordenar_inversionistas(metodo, atributo, tipo):
-    url = URL + "inversionista/order/"+metodo+"/"+atributo+"/"+tipo
+    url = URL + "inversionista/ordenar/"+metodo+"/"+atributo+"/"+tipo
 
-    r = requests.get(url)
-    print(r)
-    #print(r.json())
-
+    r = requests.get(url)  
+    
     data = r.json()
     
     if (r.status_code == 200):
@@ -144,9 +144,10 @@ def ordenar_inversionistas(metodo, atributo, tipo):
         flash('No se pudo ordenar', category = 'error')
         return redirect(lista_inversionistas)
     
-@router.route('/inversionistas/search/<metodo>/<atributo>/<tipo>/<valor>')
-def search_inversionistas(metodo, atributo, tipo, valor):
-    url = URL + "inversionista/search/" + metodo+"/"+atributo+"/"+tipo+"/"+valor
+#Buscar inversionistas por metodo, atributo, valor    
+@router.route('/inversionistas/busqueda/<metodo>/<atributo>/<valor>')
+def search_inversionistas(metodo, atributo, valor):
+    url = URL + "inversionista/busqueda/" + metodo+"/"+atributo +"/"+valor
 
     r = requests.get(url)
     data = r.json()
@@ -257,17 +258,9 @@ def lista_inversiones(msg = ''):
    
     return render_template('listainversiones.html', inversiones=data, inversionistas=i, proyectos=p)
 
-    
-
-@router.route('/inversion/<int:id>')
-def inversion(id):
-    r = requests.get(f"http://localhost:8080/myapp/inversion/get/{id}")
-    data = r.json()
-    return render_template('inversion.html', item=data["data"])
-
 @router.route('/inversiones/ordenar/<metodo>/<atributo>/<tipo>')
 def ordenar_inversiones(metodo, atributo, tipo):
-    url = URL + "inversion/order/"+metodo+"/"+atributo+"/"+tipo
+    url = URL + "inversion/ordenar/"+metodo+"/"+atributo+"/"+tipo
     r = requests.get(url)
     inversionistas_res = requests.get("http://localhost:8080/myapp/inversionista/all")
     proyectos_res = requests.get("http://localhost:8080/myapp/proyecto/all")
@@ -283,9 +276,9 @@ def ordenar_inversiones(metodo, atributo, tipo):
         flash('No se ha podido ordenar', category='error')
         return redirect('lista_inversiones')
 
-@router.route('/inversiones/search/<metodo>/<atributo>/<tipo>/<valor>')
-def search_inversiones(metodo, atributo, tipo, valor):
-    url = URL + "inversion/search/" + metodo+"/"+atributo+"/"+tipo+"/"+valor
+@router.route('/inversiones/busqueda/<metodo>/<atributo>/<valor>')
+def search_inversiones(metodo, atributo, valor):
+    url = URL + "inversion/busqueda/" + metodo+"/"+atributo+"/"+valor
     r = requests.get(url)
     inversionistas_res = requests.get("http://localhost:8080/myapp/inversionista/all")
     proyectos_res = requests.get("http://localhost:8080/myapp/proyecto/all")
@@ -301,6 +294,11 @@ def search_inversiones(metodo, atributo, tipo, valor):
         flash('No se ha podido encontrar', category='error')
         return redirect('lista_inversiones')
 
+@router.route('/inversion/<int:id>')
+def inversion(id):
+    r = requests.get(f"http://localhost:8080/myapp/inversion/get/{id}")
+    data = r.json()
+    return render_template('inversion.html', item=data["data"])
     
 @router.route('/inversion/add', methods=['GET'])
 def add_inversion():
@@ -336,7 +334,7 @@ def delete_inversion(id):
 
 @router.route('/inversion/actualizar/<int:id>')
 def edit_inversion(id):
-    r = requests.get("http://localhost:8080/myapp/inversion/get/"+str(id))
+    r = requests.get("http://localhost:8080/myapp/inversion/get/"+{id})
     data = r.json()
     if(r.status_code == 200):
         return render_template('update_inversion.html',inversion = data["data"])

@@ -1,14 +1,12 @@
 package com.proyectosEnergia.controller.dao.services;
 
+import java.util.HashMap;
+
 import com.proyectosEnergia.controller.dao.InversionDao;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
 import com.proyectosEnergia.models.Inversion;
 import com.proyectosEnergia.models.Inversionista;
 import com.proyectosEnergia.models.Proyecto;
-
-import java.util.HashMap;
-
-import com.google.gson.Gson;
 
 public class InversionServices {
     private InversionDao obj;
@@ -64,15 +62,4 @@ public class InversionServices {
         return obj.get(id);
     }
 
-    public LinkedList orderByMergeSort(String atribute, Integer type) throws Exception {
-        return this.obj.listAll().orderByMergeSort(atribute, type);
-    }
-
-    public LinkedList orderByShellSort(String atribue, Integer type) throws Exception {
-        return this.obj.listAll().orderByShellSort(atribue, type);
-    }
-
-    public LinkedList orderByQuickSort(String atribue, Integer type) throws Exception {
-        return this.obj.listAll().orderByQuickSort(atribue, type);
-    }
 }

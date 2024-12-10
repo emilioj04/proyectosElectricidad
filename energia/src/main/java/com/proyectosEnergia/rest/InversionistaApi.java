@@ -46,17 +46,39 @@ public class InversionistaApi {
         return Response.ok(map).build();
     }
 
-    @Path("/order/shellSort/{attribute}/{type}")
+    @Path("/ordenar/shellSort/{atributo}/{orden}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response orderByShellSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+    public Response orderByShellSort (@PathParam("atributo") String atributo, @PathParam("orden") Integer orden) {
         HashMap map = new HashMap<>();
         InversionistaServices is = new InversionistaServices();
         map.put("msg", "ok");
         try {
-            LinkedList data = is.orderByShellSort(attribute, type);
-            map.put("data", data.toArray());
-            if (data.isEmpty()) {
+            LinkedList lista = is.listAll().ordenarShellSort(atributo, orden);
+            map.put("data", lista.toArray());
+            if (lista.isEmpty()) {
+                map.put("msg", "No hay inversionistas en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+
+        }
+        return Response.ok(map).build();
+    }
+
+    @Path("/ordenar/mergeSort/{atributo}/{orden}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response orderByMergeSort (@PathParam("atributo") String atributo, @PathParam("orden") Integer orden) {
+        HashMap map = new HashMap<>();
+        InversionistaServices is = new InversionistaServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList lista = is.listAll().ordenarQuickSort(atributo, orden);
+            map.put("data", lista.toArray());
+            if (lista.isEmpty()) {
                 map.put("msg", "No hay inversionistas en la base de datos");
             }
         } catch (Exception e) {
@@ -70,17 +92,17 @@ public class InversionistaApi {
 
     }
 
-    @Path("/order/quickSort/{attribute}/{type}")
+    @Path("/ordenar/quickSort/{atributo}/{orden}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response orderByQuickSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+    public Response orderByQuickSort (@PathParam("atributo") String atributo, @PathParam("orden") Integer orden) {
         HashMap map = new HashMap<>();
         InversionistaServices is = new InversionistaServices();
         map.put("msg", "ok");
         try {
-            LinkedList data = is.orderByQuickSort(attribute, type);
-            map.put("data", data.toArray());
-            if (data.isEmpty()) {
+            LinkedList lista = is.listAll().ordenarQuickSort(atributo, orden);
+            map.put("data", lista.toArray());
+            if (lista.isEmpty()) {
                 map.put("msg", "No hay inversionistas en la base de datos");
             }
         } catch (Exception e) {
@@ -89,35 +111,58 @@ public class InversionistaApi {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
 
         }
-
         return Response.ok(map).build();
-
     }
 
-    @Path("/order/mergeSort/{attribute}/{type}")
+    @Path("/busqueda/lineal/{atributo}/{valor}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response orderByMergeSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+    public Response searchLineal(@PathParam("atributo") String atributo, @PathParam("valor") String valor) {
         HashMap map = new HashMap<>();
         InversionistaServices is = new InversionistaServices();
-        map.put("msg", "ok");
         try {
-            LinkedList data = is.orderByMergeSort(attribute, type);
-            map.put("data", data.toArray());
-            if (data.isEmpty()) {
+            LinkedList lista = is.listAll().linealSearch(atributo, valor);
+            map.put("data", lista.toArray());
+
+            if (lista.isEmpty()) {
                 map.put("msg", "No hay inversionistas en la base de datos");
-            }
-        } catch (Exception e) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+                } 
+            
+        } catch (Exception e) { 
             map.put("msg", "Error");
             map.put("data", e.toString());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
-
         }
 
         return Response.ok(map).build();
 
     }
-    
+
+    @Path("/busqueda/binaria/{atributo}/{valor}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchBinary(@PathParam("atributo") String atributo, @PathParam("valor") String valor) {
+        HashMap map = new HashMap<>();
+        InversionistaServices is = new InversionistaServices();
+        try {
+            LinkedList data = is.listAll().binarySearch(atributo, valor);
+            map.put("data", data.toArray());
+
+            if (data.isEmpty()) {
+                map.put("msg", "No hay inversionistas en la base de datos");
+                return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+            }
+            
+        } catch (Exception e) { 
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+
+        return Response.ok(map).build();
+
+    }
 
     @Path("/get/{id}")
     @GET
@@ -207,76 +252,6 @@ public class InversionistaApi {
         }
         
     }  
-
-    @Path("/search/lineal/{attribute}/{type}/{value}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response searchLineal(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
-        HashMap map = new HashMap<>();
-        InversionistaServices is = new InversionistaServices();
-        try {
-            if (type == 1) {
-                LinkedList data = is.listAll().multipleLinealSearch(attribute, value);
-                map.put("data", data.toArray());
-
-                if (data.isEmpty()) {
-                    map.put("msg", "No hay inversionistas en la base de datos");
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                } 
-            } else {
-                Inversionista data = (Inversionista) is.listAll().atomicLinealSearch(attribute, value);
-                map.put("data", data);
-
-                if (data == null) {
-                    map.put("msg", "No hay inversionistas en la base de datos");    
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                }
-
-            }
-        } catch (Exception e) { 
-            map.put("msg", "Error");
-            map.put("data", e.toString());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
-        }
-
-        return Response.ok(map).build();
-
-    }
-
-    @Path("/search/binary/{attribute}/{type}/{value}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response searchBinary(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
-        HashMap map = new HashMap<>();
-        InversionistaServices is = new InversionistaServices();
-        try {
-            if (type == 1) {
-                LinkedList data = is.listAll().multipleBinarySearch(attribute, value);
-                map.put("data", data.toArray());
-
-                if (data.isEmpty()) {
-                    map.put("msg", "No hay inversionistas en la base de datos");
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                } 
-            } else {
-                Inversionista data = (Inversionista) is.listAll().atomicBinarySearch(attribute, value);
-                map.put("data", data);
-
-                if (data == null) {
-                    map.put("msg", "No hay inversionistas en la base de datos");    
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                }
-
-            }
-        } catch (Exception e) { 
-            map.put("msg", "Error");
-            map.put("data", e.toString());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
-        }
-
-        return Response.ok(map).build();
-
-    }
 
     @Path("/delete")
     @POST

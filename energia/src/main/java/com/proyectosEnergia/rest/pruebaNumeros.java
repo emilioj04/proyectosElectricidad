@@ -1,76 +1,78 @@
 package com.proyectosEnergia.rest;
 
 import java.util.Random;
+import java.util.Scanner;
 
 import com.proyectosEnergia.controller.tda.list.LinkedList;
 
 public class pruebaNumeros {
-
-    //CREAR NUMEROS ALEATORIOS EN UNA LISTA
+    
+    //Crear lista y llenarla con numeros aleatorios
     static LinkedList<Integer> crearLista(Integer size) {
-        Integer[] arr = new Integer[size];
+        Integer[] aux = new Integer[size];
         LinkedList<Integer> lista = new LinkedList<>();
         Random random = new Random();
         for (int i = 0; i < size; i++) {
-            arr[i] = random.nextInt(1000);
+            aux[i] = random.nextInt(10000);
         }
-        lista.toList(arr);
+        lista.toList(aux);
         return lista;
     }
 
-    static Double testOrder(LinkedList<Integer> lista, String metodo, Integer tipo) throws Exception {
-        Long total;
-        Long start = System.nanoTime();
+    static Double pruebaOrden(LinkedList<Integer> lista, String metodo, Integer tipo) throws Exception {
+        Long inicio = System.nanoTime();
         switch (metodo) {
             case "shell":
-                lista.orderByShellSort(tipo);
+                lista.ordenarShellSort(tipo);
                 break;
             case "merge":
-                lista.orderByMergeSort(tipo);
+                lista.ordenarMergeSort(tipo);
                 break;
             case "quick":
-                lista.orderByQuickSort(tipo);
+                lista.ordenarQuickSort(tipo);
                 break;
             default:
                 break;
         }
-        Long end = System.nanoTime();
-        total = (end - start);
-        return total / 1000000.0;
+        Long fin = System.nanoTime();
+        return (fin - inicio)/1000000.0;
     }
-
-    static Double testSearch(LinkedList<Integer> lista, String metodo, Object valor) throws Exception {
-        Long start = System.nanoTime();
+    
+    static Long pruebaBusqueda(LinkedList<Integer> lista, String metodo, Object valor) throws Exception {
+        Long total;
+        Long inicio = System.nanoTime();
         switch (metodo) {
-            case "m_lineal":
-                lista.multipleLinealSearch(valor);
+            case "lineal":
+                lista.linealSearch(valor);
                 break;
-            case "m_binary":
-                lista.multipleBinarySearch(valor);
-                break;
-            case "a_lineal":
-                lista.atomicLinealSearch(valor);
-                break;
-            case "a_binary":
-                lista.atomicLinealSearch(valor);
+            case "binario":
+                lista.binarySearch(valor);
                 break;
             default:
                 break;
         }
-        Long end = System.nanoTime();
-        return (end - start)/1.0;
+        Long fin = System.nanoTime();
+        total = (fin - inicio);
+        return total;
     }
 
     public static void main(String[] args) {
-        LinkedList<Integer> lista = crearLista(25000);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Ingrese el tamaño de la lista: ");
+        Integer size = sc.nextInt();
+
+        LinkedList<Integer> lista = crearLista(size);
         try {
-            System.out.println("Shell: " + testOrder(lista, "shell", 0) + " ms");
-            System.out.println("Merge: " + testOrder(lista, "merge", 0) + " ms");
-            System.out.println("Quick: " + testOrder(lista, "quick", 0) + " ms");
-            System.out.println("Multiple Lineal: " + testSearch(lista, "lineal", 200) + " ns");
-            System.out.println("Multiple Binary: " + testSearch(lista, "binary", 200) + " ns");
-            System.out.println("Atomic Lineal: " + testSearch(lista, "lineal", 666) + " ns");
-            System.out.println("Atomic Binary: " + testSearch(lista, "binary", 666) + " ns");
+            
+            LinkedList<Integer> listaquick = lista.clone();
+            System.out.println("Ordenacion por QuickSort: " + pruebaOrden(listaquick, "quick", 0) + " ms");
+            LinkedList<Integer> listashell = lista.clone();
+            System.out.println("Ordenacion por ShellSort: " + pruebaOrden(listashell, "shell", 0) + " ms");
+            LinkedList<Integer> listamerge = lista.clone();
+            System.out.println("Ordenacion por MergeSort: " + pruebaOrden(listamerge, "merge", 0) + " ms");
+            LinkedList<Integer> listabusqueda = crearLista(size);
+            System.out.println("Busqueda Lineal: " + pruebaBusqueda(listabusqueda, "lineal", 200) + " ns");
+            System.out.println("Busqueda Binaria: " + pruebaBusqueda(listabusqueda, "binaria", 200) + " ns");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,15 +1,12 @@
 package com.proyectosEnergia.rest;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -22,7 +19,7 @@ import com.proyectosEnergia.controller.dao.services.ProyectoServices;
 import com.proyectosEnergia.controller.dao.services.RegistroServices;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
 import com.proyectosEnergia.models.Proyecto;
-import com.proyectosEnergia.models.Proyecto;
+
 
 @Path("/proyecto")
 public class ProyectoApi {
@@ -49,15 +46,16 @@ public class ProyectoApi {
         return Response.ok(map).build();
     }
 
-    @Path("/order/shellSort/{attribute}/{type}")
+    //Ordenar Proyectos por ShellSort por atributo y orden
+    @Path("/ordenar/shellSort/{atributo}/{orden}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response orderByShellSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+    public Response orderByShellSort (@PathParam("atributo") String atributo, @PathParam("orden") Integer orden) {
         HashMap map = new HashMap<>();
         ProyectoServices ps = new ProyectoServices();
         map.put("msg", "ok");
         try {
-            LinkedList data = ps.orderByShellSort(attribute, type);
+            LinkedList data = ps.listAll().ordenarShellSort(atributo, orden);
             map.put("data", data.toArray());
             if (data.isEmpty()) {
                 map.put("msg", "No hay Proyectos en la base de datos");
@@ -67,58 +65,102 @@ public class ProyectoApi {
             map.put("data", e.toString());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
 
+        }
+        return Response.ok(map).build();
+    }
+
+    //Ordenar Proyectos por MergeSort por atributo y orden
+    @Path("/ordenar/mergeSort/{atributo}/{orden}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response orderByMergeSort (@PathParam("atributo") String atributo, @PathParam("orden") Integer orden) {
+        HashMap map = new HashMap<>();
+        ProyectoServices ps = new ProyectoServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList data = ps.listAll().ordenarMergeSort(atributo, orden);
+            map.put("data", data.toArray());
+            if (data.isEmpty()) {
+                map.put("msg", "No hay Proyectos en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+
+        }
+        return Response.ok(map).build();
+    }
+
+    //Ordenar Proyectos por QuickSort por atributo y orden
+    @Path("/ordenar/quickSort/{atributo}/{orden}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response orderByQuickSort (@PathParam("atributo") String atributo, @PathParam("orden") Integer orden) {
+        HashMap map = new HashMap<>();
+        ProyectoServices ps = new ProyectoServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList data = ps.listAll().ordenarQuickSort(atributo, orden);
+            map.put("data", data.toArray());
+            if (data.isEmpty()) {
+                map.put("msg", "No hay Proyectos en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+        return Response.ok(map).build();
+    }
+
+    //Busqueda Lineal de Proyectos por atributo y valor
+    @Path("/busqueda/lineal/{atributo}/{valor}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchLineal(@PathParam("atributo") String atributo, @PathParam("valor") String valor) {
+        HashMap map = new HashMap<>();
+        ProyectoServices is = new ProyectoServices();
+        try {
+            LinkedList lista = is.listAll().linealSearch(atributo, valor);
+            map.put("data", lista.toArray());
+
+            if (lista.isEmpty()) {
+                map.put("msg", "No hay Proyectos en la base de datos");
+                return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+            } 
+            
+        } catch (Exception e) { 
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
         }
 
         return Response.ok(map).build();
 
     }
 
-    @Path("/order/quickSort/{attribute}/{type}")
+    //Busqueda Binaria de Proyectos por atributo y valor
+    @Path("/busqueda/binaria/{atributo}/{valor}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response orderByQuickSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+    public Response searchBinary(@PathParam("atributo") String atributo, @PathParam("valor") String valor) {
         HashMap map = new HashMap<>();
-        ProyectoServices ps = new ProyectoServices();
-        map.put("msg", "ok");
+        ProyectoServices is = new ProyectoServices();
         try {
-            LinkedList data = ps.orderByQuickSort(attribute, type);
-            map.put("data", data.toArray());
-            if (data.isEmpty()) {
+            LinkedList lista = is.listAll().binarySearch(atributo, valor);
+            map.put("data", lista.toArray());
+
+            if (lista.isEmpty()) {
                 map.put("msg", "No hay Proyectos en la base de datos");
-            }
-        } catch (Exception e) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+            }   
+        } catch (Exception e) { 
             map.put("msg", "Error");
             map.put("data", e.toString());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
-
         }
-
         return Response.ok(map).build();
-
-    }
-
-    @Path("/order/mergeSort/{attribute}/{type}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response orderByMergeSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
-        HashMap map = new HashMap<>();
-        ProyectoServices ps = new ProyectoServices();
-        map.put("msg", "ok");
-        try {
-            LinkedList data = ps.orderByMergeSort(attribute, type);
-            map.put("data", data.toArray());
-            if (data.isEmpty()) {
-                map.put("msg", "No hay Proyectos en la base de datos");
-            }
-        } catch (Exception e) {
-            map.put("msg", "Error");
-            map.put("data", e.toString());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
-
-        }
-
-        return Response.ok(map).build();
-
     }
     
     @Path("/get/{id}") 
@@ -196,76 +238,6 @@ public class ProyectoApi {
             res.put("data", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(map).build();
         }
-
-    }
-
-    @Path("/search/lineal/{attribute}/{type}/{value}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response searchLineal(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
-        HashMap map = new HashMap<>();
-        ProyectoServices is = new ProyectoServices();
-        try {
-            if (type == 1) {
-                LinkedList data = is.listAll().multipleLinealSearch(attribute, value);
-                map.put("data", data.toArray());
-
-                if (data.isEmpty()) {
-                    map.put("msg", "No hay Proyectos en la base de datos");
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                } 
-            } else {
-                Proyecto data = (Proyecto) is.listAll().atomicLinealSearch(attribute, value);
-                map.put("data", data);
-
-                if (data == null) {
-                    map.put("msg", "No hay Proyectos en la base de datos");    
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                }
-
-            }
-        } catch (Exception e) { 
-            map.put("msg", "Error");
-            map.put("data", e.toString());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
-        }
-
-        return Response.ok(map).build();
-
-    }
-
-    @Path("/search/binary/{attribute}/{type}/{value}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response searchBinary(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
-        HashMap map = new HashMap<>();
-        ProyectoServices is = new ProyectoServices();
-        try {
-            if (type == 1) {
-                LinkedList data = is.listAll().multipleBinarySearch(attribute, value);
-                map.put("data", data.toArray());
-
-                if (data.isEmpty()) {
-                    map.put("msg", "No hay Proyectos en la base de datos");
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                } 
-            } else {
-                Proyecto data = (Proyecto) is.listAll().atomicBinarySearch(attribute, value);
-                map.put("data", data);
-
-                if (data == null) {
-                    map.put("msg", "No hay Proyectos en la base de datos");    
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                }
-
-            }
-        } catch (Exception e) { 
-            map.put("msg", "Error");
-            map.put("data", e.toString());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
-        }
-
-        return Response.ok(map).build();
 
     }
 

@@ -5,10 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -23,7 +21,6 @@ import com.proyectosEnergia.controller.dao.services.ProyectoServices;
 import com.proyectosEnergia.controller.dao.services.RegistroServices;
 import com.proyectosEnergia.controller.tda.list.LinkedList;
 import com.proyectosEnergia.models.Inversion;
-import com.proyectosEnergia.models.Proyecto;
 
 @Path("/inversion")
 public class InversionApi {
@@ -49,40 +46,18 @@ public class InversionApi {
         return Response.ok(map).build();
     }
 
-    @Path("/order/shellSort/{attribute}/{type}")
+    //Ordenar proyectos por shellSort por atributo y orden descendente o ascendente
+    @Path("/ordenar/shellSort/{atributo}/{orden}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response orderByShellSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+    public Response orderByShellSort (@PathParam("atributo") String atributo, @PathParam("orden") Integer orden) {
         HashMap map = new HashMap<>();
         InversionServices is = new InversionServices();
         map.put("msg", "ok");
         try {
-            LinkedList data = is.orderByShellSort(attribute, type);
-            map.put("data", data.toArray());
-            if (data.isEmpty()) {
-                map.put("msg", "No hay inversionistas en la base de datos");
-            }
-        } catch (Exception e) {
-            map.put("msg", "Error");
-            map.put("data", e.toString());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
-
-        }
-
-        return Response.ok(map).build();
-
-    }
-    @Path("/order/mergeSort/{attribute}/{type}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response orderByMergeSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
-        HashMap map = new HashMap<>();
-        InversionServices is = new InversionServices();
-        map.put("msg", "ok");
-        try {
-            LinkedList data = is.orderByMergeSort(attribute, type);
-            map.put("data", data.toArray());
-            if (data.isEmpty()) {
+            LinkedList lista = is.listAll().ordenarShellSort(atributo, orden);
+            map.put("data", lista.toArray());
+            if (lista.isEmpty()) {
                 map.put("msg", "No hay inversionistas en la base de datos");
             }
         } catch (Exception e) {
@@ -96,17 +71,18 @@ public class InversionApi {
 
     }
 
-    @Path("/order/quickSort/{attribute}/{type}")
+    //Ordenar proyectos por mergeSort por atributo y orden descendente o ascendente
+    @Path("/ordenar/mergeSort/{atributo}/{orden}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response orderByQuickSort (@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+    public Response orderByMergeSort (@PathParam("atributo") String atributo, @PathParam("orden") Integer orden) {
         HashMap map = new HashMap<>();
         InversionServices is = new InversionServices();
         map.put("msg", "ok");
         try {
-            LinkedList data = is.orderByQuickSort(attribute, type);
-            map.put("data", data.toArray());
-            if (data.isEmpty()) {
+            LinkedList lista = is.listAll().ordenarMergeSort(atributo, orden);
+            map.put("data", lista.toArray());
+            if (lista.isEmpty()) {
                 map.put("msg", "No hay inversionistas en la base de datos");
             }
         } catch (Exception e) {
@@ -120,35 +96,48 @@ public class InversionApi {
 
     }
 
-
-
-
-
-    @Path("/search/lineal/{attribute}/{type}/{value}")
+    //Ordenar proyectos por quickSort por atributo y orden descendente o ascendente
+    @Path("/ordenar/quickSort/{atributo}/{orden}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response searchLineal(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
+    public Response orderByQuickSort (@PathParam("atributo") String atributo, @PathParam("orden") Integer orden) {
+        HashMap map = new HashMap<>();
+        InversionServices is = new InversionServices();
+        map.put("msg", "ok");
+        try {
+            LinkedList lista = is.listAll().ordenarQuickSort(atributo, orden);
+            map.put("data", lista.toArray());
+            if (lista.isEmpty()) {
+                map.put("msg", "No hay inversionistas en la base de datos");
+            }
+        } catch (Exception e) {
+            map.put("msg", "Error");
+            map.put("data", e.toString());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+
+        }
+
+        return Response.ok(map).build();
+
+    }
+
+    //Buscar inversionista por atributo y valor
+    @Path("/busqueda/lineal/{atributo}/{valor}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchLineal(@PathParam("atributo") String atributo, @PathParam("valor") String valor) {
         HashMap map = new HashMap<>();
         InversionServices is = new InversionServices();
         try {
-            if (type == 1) {
-                LinkedList data = is.listAll().multipleLinealSearch(attribute, value);
-                map.put("data", data.toArray());
+            LinkedList lista = is.listAll().linealSearch(atributo, valor);
+            map.put("data", lista.toArray());
 
-                if (data.isEmpty()) {
-                    map.put("msg", "No hay inversionistas en la base de datos");
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+            if (lista.isEmpty()) {
+                map.put("msg", "No hay inversionistas en la base de datos");
+                return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
                 } 
-            } else {
-                Inversion data = (Inversion) is.listAll().atomicLinealSearch(attribute, value);
-                map.put("data", data);
-
-                if (data == null) {
-                    map.put("msg", "No hay inversionistas en la base de datos");    
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                }
-
-            }
+            
+            
         } catch (Exception e) { 
             map.put("msg", "Error");
             map.put("data", e.toString());
@@ -157,31 +146,22 @@ public class InversionApi {
         return Response.ok(map).build();
     }
 
-    @Path("/search/binary/{attribute}/{type}/{value}")
+    //Buscar inversionista por atributo y valor
+    @Path("/busqueda/binaria/{atributo}/{valor}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response searchBinary(@PathParam("attribute") String attribute, @PathParam("value") String value, @PathParam("type") Integer type) {
+    public Response searchBinary(@PathParam("atributo") String atributo, @PathParam("valor") String valor) {
         HashMap map = new HashMap<>();
         InversionServices is = new InversionServices();
         try {
-            if (type == 1) {
-                LinkedList data = is.listAll().multipleBinarySearch(attribute, value);
-                map.put("data", data.toArray());
+            LinkedList lista = is.listAll().binarySearch(atributo, valor);
+            map.put("data", lista.toArray());
 
-                if (data.isEmpty()) {
-                    map.put("msg", "No hay Proyectos en la base de datos");
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                } 
-            } else {
-                Proyecto data = (Proyecto) is.listAll().atomicBinarySearch(attribute, value);
-                map.put("data", data);
-
-                if (data == null) {
-                    map.put("msg", "No hay Proyectos en la base de datos");    
-                    return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-                }
-
-            }
+            if (lista.isEmpty()) {
+                map.put("msg", "No hay Proyectos en la base de datos");
+                return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
+            } 
+            
         } catch (Exception e) { 
             map.put("msg", "Error");
             map.put("data", e.toString());
@@ -313,76 +293,68 @@ public class InversionApi {
     }
 
     @Path("/update")
-@POST
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public Response update(HashMap map) {
-    HashMap res = new HashMap<>();
-    try {
-        // Verificar que el ID esté presente
-        if (map.get("id") == null) {
-            res.put("msg", "ERROR");
-            res.put("data", "El ID de la inversión es requerido");
-            return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
-        }
-
-        // Obtener la inversión
-        InversionServices is = new InversionServices();
-        is.setInversion(is.get(Integer.parseInt(map.get("id").toString())));
-
-        // Verificar si la inversión existe
-        if (is.getInversion() == null || is.getInversion().getId() == null) {
-            res.put("msg", "ERROR");
-            res.put("data", "No existe la inversión con el ID proporcionado");
-            return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
-        }
-
-        // Verificar que los parámetros de inversionista y proyecto estén presentes
-        if (map.get("investor") != null && map.get("project") != null) {
-            InversionistaServices inversionistaServices = new InversionistaServices();
-            ProyectoServices proyectoServices = new ProyectoServices();
-            
-            // Obtener inversionista
-            inversionistaServices.setInversionista(inversionistaServices.get(Integer.parseInt(map.get("investor").toString())));
-            // Verificar si el inversionista fue encontrado
-            if (inversionistaServices.getInversionista() == null) {
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response update(HashMap map) {
+        HashMap res = new HashMap<>();
+        try {
+            if (map.get("id") == null) {
                 res.put("msg", "ERROR");
-                res.put("data", "No existe el inversionista con el ID proporcionado");
-                return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
-            }
-            
-            // Obtener proyecto
-            proyectoServices.setProyecto(proyectoServices.get(Integer.parseInt(map.get("project").toString())));
-            // Verificar si el proyecto fue encontrado
-            if (proyectoServices.getProyecto() == null) {
-                res.put("msg", "ERROR");
-                res.put("data", "No existe el proyecto con el ID proporcionado");
+                res.put("data", "El ID de la inversión es requerido");
                 return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
             }
 
-            // Si todo está bien, actualizar la inversión
-            is.getInversion().setFecha(map.get("fecha").toString());
-            is.getInversion().setMontoInvertido(Double.parseDouble(map.get("montoInvertido").toString()));
-            is.getInversion().setIdInversionista(inversionistaServices.getInversionista().getId());
-            is.getInversion().setIdProyecto(proyectoServices.getProyecto().getId());
-            is.update();
+            InversionServices is = new InversionServices();
+            is.setInversion(is.get(Integer.parseInt(map.get("id").toString())));
 
-            res.put("msg", "OK");
-            res.put("data", "Inversión actualizada");
-            return Response.ok(res).build();
-        } else {
+            if (is.getInversion() == null || is.getInversion().getId() == null) {
+                res.put("msg", "ERROR");
+                res.put("data", "No existe la inversión con el ID proporcionado");
+                return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
+            }
+
+            if (map.get("investor") != null && map.get("project") != null) {
+                InversionistaServices inversionistaServices = new InversionistaServices();
+                ProyectoServices proyectoServices = new ProyectoServices();
+                
+                inversionistaServices.setInversionista(inversionistaServices.get(Integer.parseInt(map.get("investor").toString())));
+
+                if (inversionistaServices.getInversionista() == null) {
+                    res.put("msg", "ERROR");
+                    res.put("data", "No existe el inversionista con el ID proporcionado");
+                    return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
+                }
+                
+                proyectoServices.setProyecto(proyectoServices.get(Integer.parseInt(map.get("project").toString())));
+
+                if (proyectoServices.getProyecto() == null) {
+                    res.put("msg", "ERROR");
+                    res.put("data", "No existe el proyecto con el ID proporcionado");
+                    return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
+                }
+
+                is.getInversion().setFecha(map.get("fecha").toString());
+                is.getInversion().setMontoInvertido(Double.parseDouble(map.get("montoInvertido").toString()));
+                is.getInversion().setIdInversionista(inversionistaServices.getInversionista().getId());
+                is.getInversion().setIdProyecto(proyectoServices.getProyecto().getId());
+                is.update();
+
+                res.put("msg", "OK");
+                res.put("data", "Inversión actualizada");
+                return Response.ok(res).build();
+            } else {
+                res.put("msg", "ERROR");
+                res.put("data", "Faltan los parámetros 'investor' o 'project'");
+                return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
+            }
+        } catch (Exception e) {
+            System.out.println("Error en update data: " + e.getMessage());
+            e.printStackTrace();
             res.put("msg", "ERROR");
-            res.put("data", "Faltan los parámetros 'investor' o 'project'");
+            res.put("data", e.toString());
             return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
         }
-    } catch (Exception e) {
-        // Registrar el error completo para facilitar la depuración
-        System.out.println("Error en update data: " + e.getMessage());
-        e.printStackTrace();  // Añadir el rastreo completo del error para mayor información
-        res.put("msg", "ERROR");
-        res.put("data", e.toString());
-        return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
     }
-}
 
 }

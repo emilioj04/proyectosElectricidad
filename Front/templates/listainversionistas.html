@@ -22,8 +22,8 @@
                         <div class="col-md-2">
                             <label for="metodo" class="form-label">Método de Busqueda:</label>
                             <select class="form-select" id="metodo-busq" name="metodo-busq">
-                                <option value="lineal">LinealSearch</option>
-                                <option value="binary">BinarySearch</option>
+                                <option value="lineal">Busqueda Lineal</option>
+                                <option value="binaria">Busqueda Binaria</option>
                             </select>
                         </div>  
                         <div class="col-md-2">
@@ -161,11 +161,10 @@
             event.preventDefault();
             var metodo_b = $('#metodo-busq').val();
             var atributo = $('#atributo').val();
-            var type = "1";
             var valor = $('#valor').val();
 
-            if (metodo_b && atributo && type && valor !== undefined) { 
-              window.location.href = `/inversionistas/search/${metodo_b}/${atributo}/${type}/${valor}`; 
+            if (metodo_b && atributo && valor !== undefined) { 
+              window.location.href = `/inversionistas/busqueda/${metodo_b}/${atributo}/${valor}`; 
             } else { 
               console.log("Valores de formulario inválidos."); 
             }

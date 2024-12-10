@@ -8,13 +8,8 @@ public class LinkedList<E> {
     private Node<E> header;
     private Node<E> last;
     private Integer size;
-    
-    public static Integer ASC = 1;
-    public static Integer DESC = 0;
 
-    /**
-     * Clase que permite realizar una lista enlazada
-     **/
+    // LINKED LIST
     public LinkedList() {
         this.header = null;
         this.last = null;
@@ -24,8 +19,9 @@ public class LinkedList<E> {
     public Boolean isEmpty() {
         return (this.header == null || this.size == 0);
     }
-
     
+    //METODOS C.R.U.D para los objetos de la lista Enlazada
+
     private void addHeader(E dato) {
         Node<E> help;
         if (isEmpty()) {
@@ -77,20 +73,6 @@ public class LinkedList<E> {
         }
     }
 
-    private E getFirst() throws ListEmptyException {
-        if (isEmpty()) {
-            throw new ListEmptyException("Error, Lista vacia");
-        }
-        return header.getInfo();
-    }
-
-    private E getLast() throws ListEmptyException {
-        if (isEmpty()) {
-            throw new ListEmptyException("Error, Lista vacia");
-        }
-        return last.getInfo();
-    }
-
     public E get(Integer index) throws ListEmptyException, IndexOutOfBoundsException {
         if (isEmpty()) {
             throw new ListEmptyException("Error, List empty");
@@ -127,7 +109,6 @@ public class LinkedList<E> {
         }
     }
 
-    /*** END BY POSITION */
     public void reset() {
         this.header = null;
         this.last = null;
@@ -260,47 +241,10 @@ public class LinkedList<E> {
         }
     }
 
-    public LinkedList<E> order(Integer type) throws Exception {
-        if (!isEmpty()) {
-            E data = this.header.getInfo();
-            if (data instanceof Number || data instanceof String) {
-                E[] lista = this.toArray();
-                reset();
-                for (int i = 1; i < lista.length; i++) {
-                    E aux = lista[i]; 
-                    int j = i - 1; 
-                    while (j >= 0 && compare(lista[j], aux, type)) {
-                        lista[j + 1] = lista[j--];
-                    }
-                    lista[j + 1] = aux;
-                }
-                this.toList(lista);
-            }
-        }
-        return this;
-    }
+    // METODOS DE ORDENAMIENTO
 
-    public LinkedList<E> order(String attribute, Integer type) throws Exception {
-        if (!isEmpty()) {
-            E data = this.header.getInfo();
-            if (data instanceof Object) {
-                E[] lista = this.toArray();
-                reset();
-                for (int i = 1; i < lista.length; i++) {
-                    E aux = lista[i]; 
-                    int j = i - 1; 
-                    while (j >= 0 && atrribute_compare(attribute, lista[j], aux, type)) {
-                        lista[j + 1] = lista[j--]; 
-                    }
-                    lista[j + 1] = aux; 
-                }
-                this.toList(lista);
-            }
-        }
-        return this;
-    }
- 
-    public LinkedList<E> orderByShellSort(String attribute, Integer type) throws Exception {
+    // Ordenacion por ShellSHort para Objetos(por atributo en orden descendente o ascendete)
+    public LinkedList<E> ordenarShellSort(String atributo, Integer orden) throws Exception {
         if (!isEmpty()) {
             E data = this.header.getInfo();
             if (data instanceof Object) {
@@ -312,7 +256,7 @@ public class LinkedList<E> {
                         int j = i;
                         while (j >= 0) {
                             int k = j + intervalo;
-                            if (atrribute_compare(attribute, lista[j], lista[k], type)) {
+                            if (compare_attribute(atributo, lista[j], lista[k], orden)) {
                                 E aux = lista[j];
                                 lista[j] = lista[k];
                                 lista[k] = aux;
@@ -330,7 +274,8 @@ public class LinkedList<E> {
         return this;
     }
 
-    public LinkedList<E> orderByShellSort(Integer type) throws Exception {
+    //Ordenacion por ShellShort para Numeros (mediantes su orden descendente o ascendente)
+    public LinkedList<E> ordenarShellSort(Integer orden) throws Exception {
         if (!isEmpty()) {
             E data = this.header.getInfo();
             if (data instanceof Object) {
@@ -342,7 +287,7 @@ public class LinkedList<E> {
                         int j = i;
                         while (j >= 0) {
                             int k = j + intervalo;
-                            if (compare(lista[j], lista[k], type)) {
+                            if (compare(lista[j], lista[k], orden)) {
                                 E aux = lista[j];
                                 lista[j] = lista[k];
                                 lista[k] = aux;
@@ -360,31 +305,34 @@ public class LinkedList<E> {
         return this;
     }
 
-    public LinkedList<E> orderByMergeSort(String attribute, Integer type) throws Exception {
+    //Ordenacion por MergeSort para Objetos (por atributo en orden descendente o ascendente)
+    public LinkedList<E> ordenarMergeSort(String atributo, Integer orden) throws Exception {
         if (!isEmpty()) {
             E data = this.header.getInfo();
             if (data instanceof Object) {
                 E[] lista = this.toArray();
                 reset();
-                this.toList(mergeSort(lista, attribute, type));
+                this.toList(mergeSort(lista, atributo, orden));
             }
         }
         return this;
     }
 
-    public LinkedList<E> orderByMergeSort(Integer type) throws Exception {
+    //Ordenacion por MergeSort para Numeros (mediante su orden descendente o ascendente)
+    public LinkedList<E> ordenarMergeSort(Integer orden) throws Exception {
         if (!isEmpty()) {
             E data = this.header.getInfo();
             if (data instanceof Number || data instanceof String) {
                 E[] lista = this.toArray();
                 reset();
-                this.toList(mergeSort(lista, type));
+                this.toList(mergeSort(lista, orden));
             }
         }
         return this;
     }
 
-    private E[] mergeSort(E[] lista, String attribute, Integer type) throws Exception {
+    //Metodo de MergeSort para Objetos, divide el arreglo en subarreglos, los combina y devuelve la lista ordenada
+    private E[] mergeSort(E[] lista, String atributo, Integer orden) throws Exception {
         if (lista.length <= 1) {
             return lista;
         } else {
@@ -397,27 +345,33 @@ public class LinkedList<E> {
                 left[i] = lista[i];
             }
 
-            int j = 0;
+            int aux = 0;
             for (int k = middle; k < lista.length; k++) {
-                right[j] = lista[k];
-                j++;
+                right[aux] = lista[k];
+                aux++;
             }
-
-            left = mergeSort(left, attribute, type);
-            right = mergeSort(right, attribute, type);
             
+            //Realiza el proceso de recursion con los subarreglos izquierda y derecha
+            left = mergeSort(left, atributo, orden);
+            right = mergeSort(right, atributo, orden);
+            
+            //Combina los subarreglos izquierda y derecha ya ordenados
             if (left.length >= 1 && right.length >= 1) {
-                merge(lista, left, right, attribute, type);
+                merge(lista, left, right, atributo, orden);
             }
         }
         return lista;
     }
 
-    private void merge(E[] lista, E[] left, E[] right, String attribute, Integer type) throws Exception {
-        int i = 0, j = 0, k = 0;
+
+    //Combina los arreglos izquierda y derecha
+    private void merge(E[] lista, E[] left, E[] right, String atributo, Integer orden) throws Exception {
+        int i = 0;
+        int j = 0; 
+        int k = 0;
 
         while (i < left.length && j < right.length) {
-            if (atrribute_compare(attribute, left[i], right[j], type)) {
+            if (compare_attribute(atributo, left[i], right[j], orden)) {
                 lista[k] = right[j];
                 j++;
             } else {
@@ -440,7 +394,9 @@ public class LinkedList<E> {
         }
     }
 
-    private E[] mergeSort(E[] lista, Integer type) throws Exception {
+
+    //Metodos para números
+    private E[] mergeSort(E[] lista, Integer orden) throws Exception {
         if (lista.length <= 1) {
             return lista;
         } else {
@@ -459,21 +415,21 @@ public class LinkedList<E> {
                 j++;
             }
 
-            left = mergeSort(left, type);
-            right = mergeSort(right, type);
+            left = mergeSort(left, orden);
+            right = mergeSort(right, orden);
             
             if (left.length >= 1 && right.length >= 1) {
-                merge(lista, left, right, type);
+                merge(lista, left, right, orden);
             }
         }
         return lista;
     }
 
-    private void merge(E[] lista, E[] left, E[] right, Integer type) throws Exception {
+    private void merge(E[] lista, E[] left, E[] right, Integer orden) throws Exception {
         int i = 0, j = 0, k = 0;
 
         while (i < left.length && j < right.length) {
-            if (compare(left[i], right[j], type)) {
+            if (compare(left[i], right[j], orden)) {
                 lista[k] = right[j];
                 j++;
             } else {
@@ -496,48 +452,52 @@ public class LinkedList<E> {
         }
     }
 
-    public LinkedList<E> orderByQuickSort(String attribute, Integer type) throws Exception {
+    //Ordenacion por QuickSort para Objetos (por atributo en orden descendente o ascendente)
+    public LinkedList<E> ordenarQuickSort(String atributo, Integer orden) throws Exception {
         if (!isEmpty()) {
             E data = this.header.getInfo();
             if (data instanceof Object) {
                 E[] lista = this.toArray();
                 reset();
-                quickSort(lista, 0, lista.length-1, attribute, type);
+                quickSort(lista, 0, lista.length-1, atributo, orden);
                 this.toList(lista);
             }
         }
         return this;
     }
 
-    public LinkedList<E> orderByQuickSort(Integer type) throws Exception {
+    //Ordenacion por QuickSort para Numeros (mediante su orden descendente o ascendente)
+    public LinkedList<E> ordenarQuickSort(Integer orden) throws Exception {
         if (!isEmpty()) {
             E data = this.header.getInfo();
             if (data instanceof Number || data instanceof String) {
                 E[] lista = this.toArray();
                 reset();
-                quickSort(lista, 0, lista.length-1, type);
-                this.toList(lista);
+                this.toList(quickSort(lista, 0, lista.length-1, orden));
             }
         }
         return this;
     }
 
-    private void quickSort(E[] lista, int low, int high, String attribute, Integer type) throws Exception {
+    //Metodos QuickSort llama a la partition y realiza la recursion
+    private E[] quickSort(E[] lista, int low, int high, String atributo, Integer orden) throws Exception {
         if (low < high) {
-            int pivote = partition(lista, low, high, attribute, type);
+            int pivote = partition(lista, low, high, atributo, orden);
 
-            quickSort(lista, low, pivote - 1, attribute, type);
-            quickSort(lista, pivote + 1, high, attribute, type);
+            quickSort(lista, low, pivote - 1, atributo, orden);
+            quickSort(lista, pivote + 1, high, atributo, orden);
             
         } 
+        return lista;
     }
 
-    private int partition(E[] lista, int low, int high, String attribute, Integer type) throws Exception {
+    //Metodo para la partition del metodo QuickSort
+    private int partition(E[] lista, int low, int high, String atributo, Integer orden) throws Exception {
         E pivote = lista[high];
         int i = low - 1;
 
         for (int j = low; j < high; j++) {
-            if (atrribute_compare(attribute, pivote, lista[j], type)) {
+            if (compare_attribute(atributo, pivote, lista[j], orden)) {
                 i++;
                 E aux = lista[i];
                 lista[i] = lista[j];
@@ -552,22 +512,25 @@ public class LinkedList<E> {
         return i + 1;
     }
 
-    private void quickSort(E[] lista, int low, int high, Integer type) throws Exception {
-        if (low < high) {
-            int pivote = partition(lista, low, high, type);
 
-            quickSort(lista, low, pivote - 1, type);
-            quickSort(lista, pivote + 1, high, type);
+    //Metodos para ordenar por QuickSort para numeros
+    private E[] quickSort(E[] lista, int low, int high, Integer orden) throws Exception {
+        if (low < high) {
+            int pivote = partition(lista, low, high, orden);
+
+            quickSort(lista, low, pivote - 1, orden);
+            quickSort(lista, pivote + 1, high, orden);
             
         } 
+        return lista;
     }
 
-    private int partition(E[] lista, int low, int high, Integer type) throws Exception {
+    private int partition(E[] lista, int low, int high, Integer orden) throws Exception {
         E pivote = lista[high];
         int i = low - 1;
 
         for (int j = low; j < high; j++) {
-            if (compare(pivote, lista[j], type)) {
+            if (compare(pivote, lista[j], orden)) {
                 i++;
                 E aux = lista[i];
                 lista[i] = lista[j];
@@ -582,16 +545,17 @@ public class LinkedList<E> {
         return i + 1;
     }
 
-    public LinkedList<E> multipleLinealSearch(String attribute, Object value) throws Exception {
+    //Busqueda Lineal para Objetos (por atributo y valor)
+    public LinkedList<E> linealSearch(String atributo, Object valor) throws Exception {
         LinkedList<E> lista = new LinkedList<>();
         if (!this.isEmpty()) {
             E[] aux = this.toArray();
             for (int i = 0; i < aux.length; i++) {
-                Object attrValue = exist_attribute(aux[i], attribute);
-                if (attrValue != null) {
-                    String attrValueStr = attrValue.toString();
-                    String valueStr = value.toString();
-                    if (attrValueStr.equals(valueStr) || attrValueStr.toLowerCase().startsWith(valueStr.toLowerCase())) {
+                Object valorAtributo = exist_attribute(aux[i], atributo);
+                if (valorAtributo != null) {
+                    String valorAtributroStr = valorAtributo.toString();
+                    String valorStr = valor.toString();
+                    if (valorAtributroStr.equals(valorStr) || valorAtributroStr.toLowerCase().startsWith(valorStr.toLowerCase())) {
                         lista.add(aux[i]);
                     }
                 }
@@ -600,12 +564,13 @@ public class LinkedList<E> {
         return lista;
     }
 
-    public LinkedList<E> multipleLinealSearch(Object value) throws Exception {
+    //Busqueda Lineal para números
+    public LinkedList<E> linealSearch(Object valor) throws Exception {
         LinkedList<E> list = new LinkedList<>();
         if (!this.isEmpty()) {
             E[] aux = this.toArray();
             for (int i = 0; i < aux.length; i++) {
-                if (aux[i].equals(value)) {
+                if (aux[i].equals(valor)) {
                     list.add(aux[i]);
                     break;
                 }
@@ -614,158 +579,27 @@ public class LinkedList<E> {
         return list;
     }
 
-    public E atomicLinealSearch(String attribute, Object value) throws Exception {
-        E obj = null;
-        if (!this.isEmpty()) {
-            E[] aux = this.toArray();
-            for (int i = 0; i < aux.length; i++) {
-                Object attrValue = exist_attribute(aux[i], attribute);
-                if (attrValue != null) {
-                    String attrValueStr = attrValue.toString();
-                    String valueStr = value.toString();
-                    if (attrValueStr.equals(valueStr) || attrValueStr.toLowerCase().startsWith(valueStr.toLowerCase())) {
-                        obj = aux[i];
-                    }
-                }
-            }
-        }
-        return obj;
-    }
-
-    public E atomicLinealSearch(Object value) throws Exception {
-        E obj = null;
-        if (!this.isEmpty()) {
-            E[] aux = this.toArray();
-            for (int i = 0; i < aux.length; i++) {
-                if (aux[i].equals(value)) {
-                    obj = aux[i];
-                    break;
-                }
-            }
-        }
-        return obj;
-    }
-
-    public LinkedList<E> multipleBinarySearch(String attribute, Object value) throws Exception {
+    //Busqueda Binaria para Objetos (por atributo y valor)
+    public LinkedList<E> binarySearch(String atributo, Object valor) throws Exception {
         LinkedList<E> lista = new LinkedList<>();
         if (!this.isEmpty()) {
-            this.orderByQuickSort(attribute, 0);
+            this.ordenarQuickSort(atributo, 0);
             E[] aux = this.toArray();
             int first = 0;
             int last = aux.length - 1;
-            
-            while (first <= last) {
+            Boolean find = false;
+            while (first <= last && find == false) {
                 int mid = (first + last) / 2;
-                Object attrValue = exist_attribute(aux[mid], attribute);
-
-                if (attrValue != null) {
-                    String attrValueStr = attrValue.toString();
-                    String valueStr = value.toString();
-                    if (attrValueStr.equals(valueStr) || attrValueStr.toLowerCase().startsWith(valueStr.toLowerCase())) {
+                Object valorAtributo = exist_attribute(aux[mid], atributo);
+            
+                if (valorAtributo != null) {
+                    String valorAtributoStr = valorAtributo.toString();
+                    String valorStr = valor.toString();
+                    if (valorAtributoStr.equals(valorStr) || valorAtributoStr.toLowerCase().startsWith(valorStr.toLowerCase())) {
                         lista.add(aux[mid]);
-
-                        int left = mid - 1;
-                        while (left >= 0) {
-                            Object leftValue = exist_attribute(aux[left], attribute);
-                            if (leftValue != null && leftValue.equals(value)) {
-                                lista.addHeader(aux[left]);
-                                left--;
-                            } else {
-                                break;
-                            }
-                        }
-
-                        int right = mid + 1;
-                        while (right < aux.length) {
-                            Object rightValue = exist_attribute(aux[right], attribute);
-                            if (rightValue != null && rightValue.equals(value)) {
-                                lista.add(aux[right]);
-                                right++;
-                            } else {
-                                break;
-                            }
-                        }
-
-                        break;
-                        
-                    }
-
-                    if (compare(attrValueStr, valueStr, 0)) {
-                        last = mid - 1;
-                    } else {
-                        first = mid + 1;
-                    }
-                }
-            }
-        }
-        return lista;
-    }
-
-    public LinkedList<E> multipleBinarySearch(Object value) throws Exception {
-        LinkedList<E> list = new LinkedList<>();
-        if (!this.isEmpty()) {
-            this.orderByQuickSort(0);
-            E[] aux = this.toArray();
-            int first = 0;
-            int last = aux.length - 1;
-            Boolean find = false;
-            while (first <= last && find == false) {
-                int mid = (first + last) / 2;
-                if (aux[mid].equals(value)) {
-                    list.add(aux[mid]);
-                    int left = mid - 1;
-                    while (left >= 0) {
-                        if (aux[left].equals(value)) {
-                            list.addHeader(aux[left]);
-                            left--;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    int right = mid + 1;
-                    while (right < aux.length) {
-                        if (aux[right].equals(value)) {
-                            list.add(aux[right]);
-                            right++;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    find = true;
-                } else {
-                    if (compare(aux[mid], value, 0)) {
-                        last = mid - 1;
-                    } else {
-                        first = mid + 1;
-                    }
-                }
-            }
-        }
-        return list;
-    }
-    
-    public E atomicBinarySearch(String attribute, Object value) throws Exception {
-        E obj = null;
-        if (!this.isEmpty()) {
-            this.orderByQuickSort(attribute, 0);
-            E[] aux = this.toArray();
-            int first = 0;
-            int last = aux.length - 1;
-            Boolean find = false;
-            while (first <= last && find == false) {
-                int mid = (first + last) / 2;
-                Object attrValue = exist_attribute(aux[mid], attribute);
-            
-                if (attrValue != null) {
-                    String attrValueStr = attrValue.toString();
-                    String valueStr = value.toString();
-                    if (attrValueStr.equals(valueStr) || attrValueStr.toLowerCase().startsWith(valueStr.toLowerCase())) {
-                        obj = aux[mid];
                         find = true;
                     } else {
-                        if (compare(attrValueStr, valueStr, 0)) {
+                        if (compare(valorAtributoStr, valorStr, 0)) {
                             last = mid - 1;
                         } else {
                             first = mid + 1;
@@ -775,25 +609,25 @@ public class LinkedList<E> {
                 }
             }
         }
-        return obj;
+        return lista;
     }
 
     
-    public E atomicBinarySearch(Object value) throws Exception {
+    public E binarySearch(Object valor) throws Exception {
         E obj = null;
         if (!this.isEmpty()) {
-            this.orderByQuickSort(0);
+            this.ordenarQuickSort(0);
             E[] aux = this.toArray();
             int first = 0;
             int last = aux.length - 1;
             Boolean find = false;
             while (first <= last && find == false) {
                 int mid = (first + last) / 2;
-                if (aux[mid].equals(value)) {
+                if (aux[mid].equals(valor)) {
                     obj = aux[mid];
                     find = true;
                 } else {
-                    if (compare(aux[mid], value, 0)) {
+                    if (compare(aux[mid], valor, 0)) {
                         last = mid - 1;
                     } else {
                         first = mid + 1;
@@ -805,8 +639,9 @@ public class LinkedList<E> {
     }
     
     //METODOS AUXILIARES PARA ORDENAMIENTO
-    private Boolean compare(Object a, Object b, Integer type) {
-        switch (type) {
+    //Comparar los objetos a y b segun el tipo de ordenamiento
+    private Boolean compare(Object a, Object b, Integer orden) {
+        switch (orden) {
             case 0:
                 if (a instanceof Number) {
                     Number a1 = (Number) a;
@@ -828,10 +663,13 @@ public class LinkedList<E> {
     }
 
 
-    private Boolean atrribute_compare(String attribute, E a, E b, Integer type) throws Exception {
-        return compare(exist_attribute(a, attribute), exist_attribute(b, attribute), type);
+    //Comparar los atributos de los objetos a y b segun el tipo de ordenamiento
+
+    private Boolean compare_attribute(String attribute, E a, E b, Integer orden) throws Exception {
+        return compare(exist_attribute(a, attribute), exist_attribute(b, attribute), orden);
     }
 
+    // Obtener el valor de un atributo de un objeto
     private Object exist_attribute(E a, String attribute) throws Exception {
         Method method = null;
         attribute = attribute.substring(0, 1).toUpperCase() + attribute.substring(1);
@@ -855,5 +693,13 @@ public class LinkedList<E> {
         }
         
         return null;
+    }
+
+    public LinkedList<E> clone() {
+        LinkedList<E> clonedList = new LinkedList<>();
+        for (int i = 0; i < this.size; i++) {
+            clonedList.add(this.toArray()[i]);
+        }
+        return clonedList;
     }
 }
